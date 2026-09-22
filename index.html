@@ -3,17 +3,239 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sahreej Legal</title>
+<meta name="theme-color" content="#0877ee">
+<title>Sahreej — Water tanker delivery, on demand</title>
+<meta name="description" content="Sahreej makes water tanker delivery simple: choose your location, select a tanker, see the price and ETA, track the driver and reorder anytime.">
 <style>
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:760px;margin:0 auto;padding:48px 20px;line-height:1.6;color:#161616}
-a{display:block;margin:14px 0;font-size:1.15rem;color:#0b57d0}
+:root{
+  --navy:#08245f;--blue:#0877ee;--cyan:#23b9f2;--pale:#eef8ff;--ink:#10233f;
+  --muted:#63758a;--line:#dceaf7;--white:#fff;--green:#16a56b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.5}
+a{text-decoration:none;color:inherit}
+.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #edf2f7}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:25px;color:var(--navy)}
+.drop{width:38px;height:46px;filter:drop-shadow(0 5px 10px rgba(0,100,220,.18))}
+.links{display:flex;gap:28px;font-weight:700;font-size:14px;color:#304766}
+.links a:hover{color:var(--blue)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 20px;border-radius:999px;background:linear-gradient(135deg,var(--blue),#0064d8);color:#fff;font-weight:800;box-shadow:0 10px 24px rgba(0,119,238,.2)}
+.hero{overflow:hidden;background:linear-gradient(180deg,#eaf8ff 0,#f8fcff 72%,#fff 100%)}
+.hero-in{min-height:590px;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:28px;padding:70px 0 56px}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:#dff2ff;color:#0765c9;font-weight:800;font-size:13px}
+h1{font-size:clamp(48px,6vw,82px);line-height:.98;letter-spacing:-.055em;margin:18px 0;color:var(--navy);max-width:760px}
+.hero p{font-size:20px;color:#435a73;max-width:650px;margin:0 0 26px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn.secondary{background:#fff;color:var(--navy);border:1px solid #dbe9f5;box-shadow:none}
+.hero-art{position:relative;min-height:430px}
+.wave{position:absolute;left:-10%;right:-40%;height:115px;border-radius:50%;transform:rotate(-4deg);background:linear-gradient(90deg,#cceeff,#19aff3);opacity:.65}
+.wave.w1{bottom:42px}.wave.w2{bottom:4px;left:-18%;background:linear-gradient(90deg,#0e84ed,#063a9b);opacity:.9}
+.truck{position:absolute;right:0;bottom:58px;width:min(620px,100%);filter:drop-shadow(0 26px 30px rgba(15,56,99,.18))}
+.phone{position:absolute;width:180px;height:365px;border:9px solid #111b2b;border-radius:34px;background:white;box-shadow:0 22px 45px rgba(26,73,120,.26);overflow:hidden}
+.phone.one{right:28px;top:8px;transform:rotate(3deg)}
+.phone.two{right:195px;top:32px;transform:rotate(-5deg)}
+.notch{width:75px;height:17px;background:#111b2b;border-radius:0 0 14px 14px;margin:auto}
+.screen{padding:12px 10px;font-size:8px}
+.mini-head{display:flex;justify-content:space-between;align-items:center;font-weight:900;color:#132d59;margin:8px 0}
+.fake-map{height:118px;background:linear-gradient(135deg,#edf3f5,#dce8df);border-radius:13px;position:relative;overflow:hidden}
+.fake-map:before,.fake-map:after{content:"";position:absolute;background:white;opacity:.85}
+.fake-map:before{width:180px;height:5px;transform:rotate(28deg);left:-22px;top:45px}
+.fake-map:after{width:5px;height:150px;transform:rotate(12deg);left:74px;top:-10px}
+.pin{position:absolute;width:18px;height:18px;background:var(--blue);border-radius:50% 50% 50% 0;transform:rotate(-45deg);left:78px;top:50px}
+.card-ui{border:1px solid #e2ebf3;border-radius:12px;padding:10px;margin:8px 0;background:#fff}
+.row-ui{display:flex;align-items:center;gap:7px;font-size:7px}
+.tiny-truck{width:38px;height:20px;border-radius:8px;background:linear-gradient(90deg,#b9daf0 65%,#2a78b5 65%)}
+.bar{height:22px;border-radius:7px;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;margin-top:9px;font-size:7px;font-weight:800}
+section{padding:80px 0}
+.section-head{text-align:center;max-width:760px;margin:0 auto 42px}
+.section-head h2{font-size:44px;line-height:1.05;letter-spacing:-.04em;color:var(--navy);margin:0 0 10px}
+.section-head p{color:var(--muted);font-size:17px;margin:0}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.step,.benefit,.driver-card{padding:25px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:0 10px 28px rgba(24,71,111,.05)}
+.num{width:35px;height:35px;border-radius:50%;background:var(--blue);color:#fff;font-weight:900;display:grid;place-items:center;margin-bottom:18px}
+.step h3,.benefit h3,.driver-card h3{margin:0 0 7px;color:var(--navy);font-size:18px}
+.step p,.benefit p,.driver-card p{margin:0;color:var(--muted);font-size:14px}
+.soft{background:linear-gradient(180deg,#f6fbff,#edf8ff)}
+.benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.icon{width:46px;height:46px;border-radius:14px;background:#e7f5ff;color:var(--blue);display:grid;place-items:center;font-size:23px;margin-bottom:15px}
+.app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.app-card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:15px;box-shadow:0 12px 30px rgba(29,78,119,.07)}
+.mock-title{text-align:center;font-weight:900;color:var(--navy);margin:4px 0 13px}
+.mock{border:7px solid #142033;border-radius:26px;background:white;min-height:370px;overflow:hidden}
+.mock .top{height:18px;background:#142033;width:74px;border-radius:0 0 12px 12px;margin:auto}
+.mock .inside{padding:12px}
+.status{font-size:11px;font-weight:900;color:var(--navy);margin:8px 0 12px}
+.choice{border:1px solid #e2e9f0;border-radius:10px;padding:9px;margin:7px 0;display:flex;align-items:center;gap:9px;font-size:10px}
+.choice.active{border-color:var(--blue);background:#f2f8ff}
+.route{height:165px;border-radius:14px;background:linear-gradient(135deg,#edf2ef,#e6ecf3);position:relative}
+.route-line{position:absolute;width:110px;height:65px;border-right:4px solid var(--blue);border-bottom:4px solid var(--blue);left:36px;top:30px;transform:skewY(-15deg)}
+.progress{display:flex;justify-content:space-between;margin:18px 4px 8px}
+.dot{width:15px;height:15px;border-radius:50%;background:#ced8e2}.dot.on{background:var(--blue)}
+.success{width:64px;height:64px;border-radius:50%;background:#e1f8ee;color:var(--green);display:grid;place-items:center;font-size:34px;margin:50px auto 18px;font-weight:900}
+.driver{display:grid;grid-template-columns:1fr 1.6fr;gap:34px;align-items:center}
+.driver h2{font-size:48px;line-height:1.05;letter-spacing:-.04em;color:var(--navy);margin:0 0 14px}
+.driver p{font-size:17px;color:var(--muted)}
+.driver-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.cta{margin:80px auto;border-radius:34px;padding:52px;background:linear-gradient(135deg,#063a9b,#0889ef 58%,#1fc4f2);color:white;display:flex;justify-content:space-between;gap:30px;align-items:center}
+.cta h2{font-size:42px;line-height:1.05;letter-spacing:-.035em;margin:0 0 8px}
+.cta p{margin:0;opacity:.9}
+.cta .btn{background:white;color:var(--navy);box-shadow:none}
+footer{border-top:1px solid #e8eef5;padding:32px 0 42px}
+.foot{display:flex;justify-content:space-between;gap:24px;align-items:center;flex-wrap:wrap;color:#617286;font-size:14px}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a:hover{color:var(--blue)}
+@media(max-width:900px){
+  .links{display:none}.hero-in{grid-template-columns:1fr;padding-top:46px}.hero-art{min-height:400px}
+  .steps,.benefits,.app-grid{grid-template-columns:repeat(2,1fr)}.driver{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .wrap{width:min(100% - 26px,1180px)}.nav{height:66px}.brand{font-size:22px}
+  .hero-in{padding:38px 0 28px}.hero p{font-size:17px}.hero-art{min-height:330px}
+  .phone{width:130px;height:270px}.phone.one{right:8px}.phone.two{right:120px}.truck{bottom:36px}
+  section{padding:58px 0}.section-head h2{font-size:35px}.steps,.benefits,.app-grid,.driver-grid{grid-template-columns:1fr}
+  .cta{margin:58px auto;padding:34px 26px;flex-direction:column;align-items:flex-start}.cta h2{font-size:34px}
+  .driver h2{font-size:38px}
+}
 </style>
 </head>
 <body>
-<h1>Sahreej</h1>
-<p>Public policy and account-support pages.</p>
-<a href="./privacy.html">Privacy Policy</a>
-<a href="./delete-account.html">Delete Account</a>
-<p>Support: <a href="mailto:vertico.xyz@outlook.com">vertico.xyz@outlook.com</a></p>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#">
+      <svg class="drop" viewBox="0 0 64 78" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#29c4f4"/><stop offset=".52" stop-color="#0877ee"/><stop offset="1" stop-color="#08245f"/></linearGradient></defs><path fill="url(#g)" d="M32 1C24 15 7 31 7 49c0 16 11 28 25 28s25-12 25-28C57 31 40 15 32 1Z"/><path d="M11 54c13-2 19-13 27-17 6-3 11-1 16 1-5 5-9 10-13 16-5 8-13 14-24 12-3-3-5-7-6-12Z" fill="#fff" opacity=".96"/></svg>
+      Sahreej
+    </a>
+    <nav class="links">
+      <a href="#how">How it works</a><a href="#customers">Customers</a><a href="#drivers">Drivers</a><a href="./privacy.html">Privacy</a>
+    </nav>
+    <a class="btn" href="#how">Get started</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <span class="eyebrow">🚚 Water tanker delivery made simple</span>
+      <h1>Water tanker delivery, on demand.</h1>
+      <p>Choose your delivery location, select the tanker size you need, see the price and estimated arrival time, and follow your delivery from request to completion.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#how">See how it works</a>
+        <a class="btn secondary" href="#drivers">For drivers</a>
+      </div>
+    </div>
+
+    <div class="hero-art" aria-label="Sahreej app preview">
+      <div class="phone two">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="mini-head"><span>Sahreej</span><span>⋯</span></div>
+          <div class="fake-map"><span class="pin"></span></div>
+          <div class="card-ui"><strong>Set delivery location</strong><br><span style="color:#708399">Choose where the tanker should come</span></div>
+          <div class="bar">Continue</div>
+        </div>
+      </div>
+      <div class="phone one">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="mini-head"><span>Choose Tanker Size</span><span>‹</span></div>
+          <div class="card-ui row-ui"><span class="tiny-truck"></span><span><b>Small tanker</b><br>For smaller needs</span></div>
+          <div class="card-ui row-ui" style="border-color:#0877ee;background:#f2f8ff"><span class="tiny-truck"></span><span><b>Medium tanker</b><br>Popular choice</span></div>
+          <div class="card-ui row-ui"><span class="tiny-truck"></span><span><b>Large tanker</b><br>For larger needs</span></div>
+          <div class="bar">Continue</div>
+        </div>
+      </div>
+
+      <svg class="truck" viewBox="0 0 760 330" role="img" aria-label="Water tanker truck">
+        <defs>
+          <linearGradient id="tank" x1="0" x2="1"><stop stop-color="#f8fbff"/><stop offset=".5" stop-color="#dceaf6"/><stop offset="1" stop-color="#a9c7dd"/></linearGradient>
+          <linearGradient id="cab" x1="0" x2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#d8e7f2"/></linearGradient>
+        </defs>
+        <ellipse cx="410" cy="283" rx="290" ry="26" fill="#4d6b85" opacity=".18"/>
+        <rect x="80" y="135" width="435" height="120" rx="52" fill="url(#tank)" stroke="#8caec7" stroke-width="3"/>
+        <path d="M92 217c95-52 190-47 285-8s101 34 138 22v24H92Z" fill="#0a7ce9"/>
+        <path d="M95 233c90-31 176-19 264 12 71 25 111 22 156 6v16H95Z" fill="#063a9b"/>
+        <g fill="#fff"><circle cx="214" cy="193" r="27"/><path d="M214 162c-8 13-22 25-22 40 0 12 10 22 22 22s22-10 22-22c0-15-14-27-22-40Z" fill="#0a7ce9"/></g>
+        <text x="252" y="205" font-size="40" font-weight="900" fill="#08245f">Sahreej</text>
+        <path d="M510 153h91l56 48v62H510Z" fill="url(#cab)" stroke="#8caec7" stroke-width="3"/>
+        <path d="M537 164h53l38 37h-91Z" fill="#244965"/>
+        <rect x="635" y="211" width="41" height="45" rx="4" fill="#d5e5f0"/>
+        <rect x="503" y="252" width="193" height="18" rx="7" fill="#263b4f"/>
+        <g fill="#1a2937"><circle cx="185" cy="271" r="39"/><circle cx="470" cy="271" r="39"/><circle cx="620" cy="271" r="39"/></g>
+        <g fill="#b9cfdf"><circle cx="185" cy="271" r="17"/><circle cx="470" cy="271" r="17"/><circle cx="620" cy="271" r="17"/></g>
+      </svg>
+      <div class="wave w1"></div><div class="wave w2"></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head"><h2>How Sahreej works</h2><p>From request to completed delivery in a few clear steps.</p></div>
+    <div class="steps">
+      <article class="step"><div class="num">1</div><h3>Set your location</h3><p>Choose exactly where you want the tanker delivered.</p></article>
+      <article class="step"><div class="num">2</div><h3>Choose tanker size</h3><p>Select the capacity that matches your needs.</p></article>
+      <article class="step"><div class="num">3</div><h3>Confirm price & ETA</h3><p>See the delivery price and estimated arrival before ordering.</p></article>
+      <article class="step"><div class="num">4</div><h3>Track delivery</h3><p>Follow your assigned driver and delivery status in real time.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="customers">
+  <div class="wrap">
+    <div class="section-head"><h2>Built for simple ordering</h2><p>A focused experience for customers who need water delivered without unnecessary steps.</p></div>
+    <div class="benefits">
+      <article class="benefit"><div class="icon">⚡</div><h3>Fast ordering</h3><p>Set a location and request a tanker in just a few taps.</p></article>
+      <article class="benefit"><div class="icon">🏷️</div><h3>Clear pricing</h3><p>See the current delivery price before you confirm.</p></article>
+      <article class="benefit"><div class="icon">📍</div><h3>Live tracking</h3><p>Know when a driver is assigned, arriving, and delivering.</p></article>
+      <article class="benefit"><div class="icon">↻</div><h3>Easy reorder</h3><p>View previous deliveries and reorder when you need water again.</p></article>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><h2>See the flow</h2><p>The core Sahreej experience, from choosing a tanker to a completed delivery.</p></div>
+    <div class="app-grid">
+      <div class="app-card"><div class="mock-title">Choose tanker</div><div class="mock"><div class="top"></div><div class="inside"><div class="status">Choose Tanker Size</div><div class="choice"><span class="tiny-truck"></span><span>Small tanker</span></div><div class="choice active"><span class="tiny-truck"></span><span>Medium tanker ✓</span></div><div class="choice"><span class="tiny-truck"></span><span>Large tanker</span></div><div class="bar">Continue</div></div></div></div>
+      <div class="app-card"><div class="mock-title">Confirm order</div><div class="mock"><div class="top"></div><div class="inside"><div class="status">Order Summary</div><div class="fake-map"><span class="pin"></span></div><div class="card-ui"><b>Delivery location</b><br>Selected location</div><div class="card-ui"><b>Price & ETA</b><br>Shown before confirmation</div><div class="bar">Confirm Order</div></div></div></div>
+      <div class="app-card"><div class="mock-title">Track delivery</div><div class="mock"><div class="top"></div><div class="inside"><div class="status">Driver on the way</div><div class="route"><div class="route-line"></div><span class="pin" style="left:115px;top:102px"></span></div><div class="card-ui"><b>Assigned driver</b><br>Live status and contact</div><div class="progress"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div></div></div>
+      <div class="app-card"><div class="mock-title">Completed</div><div class="mock"><div class="top"></div><div class="inside"><div class="success">✓</div><div class="status" style="text-align:center;font-size:15px">Delivery Completed!</div><p style="text-align:center;color:#6c7e91;font-size:10px">Your delivery has been completed successfully.</p><div class="bar">Reorder</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="drivers">
+  <div class="wrap driver">
+    <div>
+      <span class="eyebrow">For approved drivers</span>
+      <h2>Delivery work, organized in one app.</h2>
+      <p>Drivers can go online, receive nearby requests, navigate to customers, confirm arrival, complete delivery with the customer PIN and review activity.</p>
+    </div>
+    <div class="driver-grid">
+      <article class="driver-card"><div class="icon">🚚</div><h3>Receive nearby orders</h3><p>Get delivery requests while you are available.</p></article>
+      <article class="driver-card"><div class="icon">➤</div><h3>Navigate to customers</h3><p>Use the delivery location to reach the customer.</p></article>
+      <article class="driver-card"><div class="icon">✓</div><h3>Confirm delivery</h3><p>Update arrival and complete delivery with the customer PIN.</p></article>
+      <article class="driver-card"><div class="icon">▥</div><h3>Track activity</h3><p>Review completed deliveries, earnings and settlement information.</p></article>
+    </div>
+  </div>
+</section>
+
+<div class="wrap cta">
+  <div><h2>Water delivery, when you need it.</h2><p>Sahreej brings ordering, dispatch and delivery tracking into one simple experience.</p></div>
+  <a class="btn" href="mailto:vertico.xyz@outlook.com">Contact Sahreej</a>
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand" style="font-size:20px">Sahreej</div>
+    <div class="foot-links"><a href="./privacy.html">Privacy Policy</a><a href="./delete-account.html">Delete Account</a><a href="mailto:vertico.xyz@outlook.com">Support</a></div>
+    <div>© 2026 Sahreej</div>
+  </div>
+</footer>
 </body>
 </html>
