@@ -72,14 +72,30 @@
     if(o)await S.renderCustomerState?.(o);return o;
   };
 
+  const isNative=(()=>{try{return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform())}catch(_){return false}})();
+  let lastWebRestore=0;
+  function maybeRestoreWeb(){
+    const now=Date.now();
+    if(now-lastWebRestore<15000) return;
+    lastWebRestore=now;
+    setTimeout(restoreAll,250);
+  }
+
   window.addEventListener('load',()=>{
     removeLiteralNewlineArtifacts();
     clearLegacyTimers();
     stripInternalUi();
-    setTimeout(restoreAll,600);
+    if(isNative) setTimeout(restoreAll,600);
+    else maybeRestoreWeb();
   });
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(restoreAll,100);});
-  window.addEventListener('focus',()=>setTimeout(stripInternalUi,100));
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden) return;
+    if(isNative) setTimeout(restoreAll,100);
+    else maybeRestoreWeb();
+  });
+  window.addEventListener('focus',()=>{
+    if(isNative) setTimeout(stripInternalUi,100);
+  });
 
   function removeLiteralNewlineArtifacts(root=document.body){
     if(!root)return;
