@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 150">
+<defs><linearGradient id="t" x1="0" x2="1"><stop stop-color="#f9fcff"/><stop offset=".5" stop-color="#dbeaf5"/><stop offset="1" stop-color="#a9c9df"/></linearGradient></defs>
+<ellipse cx="160" cy="129" rx="125" ry="10" fill="#173c5c" opacity=".14"/>
+<rect x="30" y="48" width="175" height="59" rx="27" fill="url(#t)" stroke="#87aac5" stroke-width="2"/>
+<path d="M35 87c48-24 88-19 126-2 22 10 34 12 44 9v13H35Z" fill="#0877ee"/>
+<path d="M35 97c45-13 82-6 120 8 20 8 33 7 50 1v8H35Z" fill="#08245f"/>
+<path d="M205 57h43l32 29v28h-75Z" fill="#eef7fd" stroke="#87aac5" stroke-width="2"/>
+<path d="M219 62h25l22 22h-47Z" fill="#274b67"/>
+<rect x="198" y="108" width="92" height="8" rx="3" fill="#253a4d"/>
+<g fill="#1c2a38"><circle cx="77" cy="117" r="19"/><circle cx="184" cy="117" r="19"/><circle cx="258" cy="117" r="19"/></g>
+<g fill="#bed1df"><circle cx="77" cy="117" r="8"/><circle cx="184" cy="117" r="8"/><circle cx="258" cy="117" r="8"/></g>
+</svg>
