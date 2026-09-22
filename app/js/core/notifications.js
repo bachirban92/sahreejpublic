@@ -424,6 +424,8 @@
 
   window.addEventListener('focus',() => {
     ensureAccountButtons();
-    subscribe().catch(() => {});
+    let native=false;
+    try{native=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform())}catch(_){}
+    if(native) subscribe().catch(() => {});
   });
 })();
