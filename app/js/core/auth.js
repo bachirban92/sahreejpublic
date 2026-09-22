@@ -38,18 +38,21 @@
     // DEVELOPMENT ONLY: create a real Supabase anonymous auth session, then
     // claim the already-registered driver by phone via a protected RPC.
     // This avoids OTP, Twilio, fake email addresses and email rate limits.
-    try{ await client.auth.signOut({scope:'local'}); }catch(_){ try{await client.auth.signOut()}catch(__){} }
-
-    const anon=await client.auth.signInAnonymously();
-    if(anon.error){
-      const msg=String(anon.error.message||'');
-      if(/anonymous|disabled/i.test(msg)){
-        throw new Error('Enable Anonymous Sign-Ins in Supabase Authentication settings for development login.');
+    // Reuse an existing browser auth session when available. Repeatedly
+    // signing out and immediately creating a new anonymous session can trigger
+    // storage/session churn in mobile Safari.
+    let session=(await client.auth.getSession()).data?.session || null;
+    if(!session?.user?.id){
+      const anon=await client.auth.signInAnonymously();
+      if(anon.error){
+        const msg=String(anon.error.message||'');
+        if(/anonymous|disabled/i.test(msg)){
+          throw new Error('Enable Anonymous Sign-Ins in Supabase Authentication settings for development login.');
+        }
+        throw anon.error;
       }
-      throw anon.error;
+      session=anon.data?.session || (await client.auth.getSession()).data?.session;
     }
-
-    const session=anon.data?.session || (await client.auth.getSession()).data?.session;
     if(!session?.user?.id) throw new Error('Could not establish driver session');
 
     // Move/attach the existing driver record for this phone to this authenticated
@@ -123,14 +126,19 @@
     const client=window.sahreejSupabase;
     if(!client) throw new Error('Backend unavailable');
 
-    try{ await client.auth.signOut({scope:'local'}); }catch(_){ try{await client.auth.signOut()}catch(__){} }
-    const anon=await client.auth.signInAnonymously();
-    if(anon.error){
-      const msg=String(anon.error.message||'');
-      if(/anonymous|disabled/i.test(msg)) throw new Error('Enable Anonymous Sign-Ins in Supabase Authentication settings for development login.');
-      throw anon.error;
+    // Reuse the current browser session instead of signOut -> signIn on every
+    // login attempt. This is both faster and avoids a known-problematic auth
+    // storage churn pattern on iPhone Safari.
+    let session=(await client.auth.getSession()).data?.session || null;
+    if(!session?.user?.id){
+      const anon=await client.auth.signInAnonymously();
+      if(anon.error){
+        const msg=String(anon.error.message||'');
+        if(/anonymous|disabled/i.test(msg)) throw new Error('Enable Anonymous Sign-Ins in Supabase Authentication settings for development login.');
+        throw anon.error;
+      }
+      session=anon.data?.session || (await client.auth.getSession()).data?.session;
     }
-    const session=anon.data?.session || (await client.auth.getSession()).data?.session;
     if(!session?.user?.id) throw new Error('Could not establish customer session');
 
     // This RPC is the single backend write for development customer auth.
