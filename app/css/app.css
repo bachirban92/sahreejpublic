@@ -1,0 +1,1283 @@
+
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Arial,sans-serif;background:#fff;color:#111}
+button,input{font:inherit} button{cursor:pointer} .app{max-width:480px;margin:auto;min-height:100vh;position:relative;background:#fff;overflow:hidden}
+.splash{position:fixed;inset:0;z-index:9999;background:#fff;display:grid;place-items:center;transition:.3s} .splash.hide{opacity:0;pointer-events:none}
+.splash img{width:min(72vw,330px);height:auto}
+.top{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#fff;position:relative;z-index:20}
+.icon{width:44px;height:44px;border:0;border-radius:50%;background:#f3f3f3;font-size:20px} .wordmark{font-size:28px;font-weight:950;color:#073b6f;letter-spacing:-1.2px}
+.mapbox{height:43vh;min-height:330px;position:relative;background:#dfe7e2;overflow:hidden}
+.mapfallback{position:absolute;inset:0;background:
+linear-gradient(28deg,transparent 46%,#fff 47%,#fff 51%,transparent 52%),
+linear-gradient(-20deg,transparent 42%,#f7f7f7 43%,#f7f7f7 48%,transparent 49%),
+linear-gradient(80deg,transparent 62%,#fff 63%,#fff 67%,transparent 68%),#dfe7e2}
+#homeMap,#pickMap,#selectMap,#trackMap{position:absolute;inset:0;z-index:2} .locate{position:absolute;right:15px;bottom:16px;z-index:5}
+.sheet{position:relative;z-index:5;margin-top:-22px;background:#fff;border-radius:25px 25px 0 0;padding:20px 18px 105px;min-height:300px}
+h1{font-size:27px;letter-spacing:-.7px;margin:0 0 14px} .where{background:#f2f2f2;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px}
+.dot{width:12px;height:12px;border-radius:50%;background:#111} .where small,.muted{display:block;color:#6b6b6b;margin-top:4px}
+.chips{display:flex;gap:9px;margin-top:12px} .chip{border:1px solid #ddd;background:#fff;border-radius:999px;padding:10px 14px;font-weight:800}
+.nav{position:absolute;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #e5e5e5;z-index:30;display:grid;grid-template-columns:repeat(3,1fr)}
+.nav button{border:0;background:#fff;font-size:11px;font-weight:800} .nav span{display:block;font-size:20px;margin-bottom:3px}
+.screen{position:absolute;inset:0;background:#fff;z-index:100;display:none;overflow:auto} .screen.active{display:block}
+.head{height:66px;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #eee;background:#fff;position:relative;z-index:10}
+.back{border:0;background:transparent;font-size:31px} .head strong{font-size:20px}
+.body{padding:18px} .search{width:100%;border:0;background:#f2f2f2;border-radius:14px;padding:15px}
+.primary{width:100%;border:0;background:#111;color:#fff;border-radius:14px;padding:16px;font-weight:900;font-size:16px}
+.secondary{width:100%;border:0;background:#eee;border-radius:14px;padding:15px;font-weight:850}
+.place{display:flex;align-items:center;justify-content:space-between;padding:16px 2px;border-bottom:1px solid #eee} .place small{display:block;color:#777;margin-top:3px}
+.fullmap{position:absolute;top:66px;left:0;right:0;bottom:0;background:#dfe7e2}
+.pin{position:absolute;z-index:6;left:50%;top:47%;transform:translate(-50%,-100%);text-align:center;pointer-events:none}
+.pin label{display:block;background:#111;color:#fff;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:900} .pin b{font-size:30px}
+.map-confirm{position:absolute;left:16px;right:16px;bottom:18px;z-index:7}
+.select-sheet{position:absolute;left:0;right:0;bottom:0;z-index:8;background:#fff;border-radius:24px 24px 0 0;padding:18px}
+.tanker{display:grid;grid-template-columns:58px 1fr auto;gap:10px;align-items:center;padding:13px;border:2px solid transparent;border-radius:16px;margin:5px 0} .tanker.selected{border-color:#111}
+.art{width:54px;height:54px;border-radius:13px;background:#f3f3f3;display:grid;place-items:center;font-size:27px} .price{font-size:19px;font-weight:950;text-align:right} .price small{display:block;font-size:10px;color:#666}
+.pay{display:flex;align-items:center;gap:10px;padding:14px 4px;border-top:1px solid #eee;margin-top:8px} .pay b{margin-left:auto}
+.card{border:1px solid #e5e5e5;border-radius:17px;padding:15px;margin:10px 0} .row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.status{display:inline-block;border-radius:999px;background:#eee;padding:6px 9px;font-size:11px;font-weight:900}
+.menuov{position:fixed;inset:0;background:#0005;z-index:500;display:none} .menuov.active{display:block} .menu{width:min(82vw,340px);height:100%;background:#fff;padding:22px 16px}
+.menu h2{margin:4px 0 18px} .menu button{width:100%;border:0;background:#fff;text-align:left;padding:16px 5px;border-bottom:1px solid #eee;font-weight:850}
+.profile{display:flex;gap:13px;align-items:center;padding:16px;background:#f5f5f5;border-radius:17px} .avatar{width:56px;height:56px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-weight:900}
+.accountrow{padding:17px 3px;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
+.toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);z-index:999;background:#111;color:#fff;border-radius:999px;padding:10px 15px;display:none}
+
+.top.brand-only{justify-content:center!important}
+
+  /* POLISHED CUSTOMER VISUAL SYSTEM */
+  body{background:#f4f6f8}
+  .app{
+    box-shadow:0 10px 40px rgba(0,0,0,.08);
+    min-height:100vh;
+  }
+  .top.brand-only{
+    height:92px!important;
+    justify-content:center!important;
+    background:#fff;
+    border-bottom:1px solid #eef0f2;
+  }
+  .app-logo{
+    width:150px;
+    height:72px;
+    object-fit:contain;
+    display:block;
+  }
+  .mapbox{
+    height:39vh;
+    min-height:310px;
+    border-radius:0 0 28px 28px;
+    overflow:hidden;
+  }
+  .sheet{
+    margin-top:-28px;
+    padding:25px 20px 110px;
+    border-radius:28px 28px 0 0;
+    box-shadow:0 -8px 28px rgba(0,0,0,.06);
+  }
+  .sheet h1{
+    font-size:30px;
+    line-height:1.08;
+    margin-bottom:18px;
+  }
+  .where{
+    padding:18px 16px;
+    border:1px solid #e6e8eb;
+    background:#fff;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
+  }
+  .where strong{font-size:17px}
+  .chips{margin-top:14px}
+  .chip{
+    padding:11px 15px;
+    background:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.03);
+  }
+  .nav{
+    height:76px;
+    border-top:1px solid #e9ebee;
+    box-shadow:0 -4px 14px rgba(0,0,0,.04);
+  }
+  .nav button{font-size:12px}
+  .nav span{font-size:22px}
+  .select-sheet{
+    padding:22px 18px 20px;
+    border-radius:28px 28px 0 0;
+    box-shadow:0 -8px 24px rgba(0,0,0,.08);
+  }
+  .tanker{
+    padding:14px 12px;
+    background:#fff;
+    border:1px solid transparent;
+  }
+  .tanker.selected{
+    border:2px solid #111;
+    background:#fff;
+  }
+  .art{
+    width:58px;height:58px;
+    border-radius:16px;
+  }
+  .primary{
+    border-radius:15px;
+    padding:17px;
+    font-size:17px;
+  }
+  .card{
+    border:1px solid #e9ebee;
+    box-shadow:0 3px 12px rgba(0,0,0,.03);
+  }
+  .screen{background:#f7f8fa}
+  .head{background:#fff}
+  .body{padding:20px}
+  .place{
+    background:#fff;
+    padding:16px 14px;
+    margin-top:8px;
+    border:1px solid #eceef0;
+    border-radius:14px;
+  }
+  .place + .place{border-top:1px solid #eceef0}
+  #activity,#account{background:#f7f8fa}
+
+  /* FULL SAHREEJ HEADER MARK */
+  .top.brand-only{
+    height:108px!important;
+    padding:8px 0!important;
+    overflow:hidden;
+  }
+  .app-logo-frame{
+    width:190px;
+    height:92px;
+    overflow:hidden;
+    position:relative;
+    margin:auto;
+  }
+  .app-logo-frame .app-logo{
+    position:absolute;
+    width:190px!important;
+    height:190px!important;
+    max-width:none!important;
+    object-fit:contain!important;
+    left:0;
+    top:-5px;
+    display:block;
+  }
+
+  .accountbtn{
+    width:100%;border:0;background:transparent;border-bottom:1px solid #e6e8eb;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 2px;font-weight:850;text-align:left;
+  }
+  .accountbtn:active{background:#f0f1f3}
+  .role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#eee;padding:4px;border-radius:14px}
+  .role{border:0;background:transparent;border-radius:10px;padding:11px;font-weight:850}
+  .role.active{background:#fff;box-shadow:0 2px 8px #0001}
+  .phonebox{display:grid;grid-template-columns:74px 1fr;gap:8px;margin-top:14px}
+  .phonebox span,.phonebox input{background:#f2f2f2;border:0;border-radius:14px;padding:15px}
+  .phonebox span{text-align:center;font-weight:850}
+  .phonebox input{width:100%;font:inherit}
+
+  /* UBER-STYLE MAP TREATMENT */
+  .leaflet-container{
+    background:#eef0f2!important;
+    font-family:Inter,system-ui,-apple-system,Arial,sans-serif!important;
+  }
+  .leaflet-control-attribution{
+    font-size:9px!important;
+    opacity:.65;
+  }
+  .mapfallback{
+    background:#eef0f2!important;
+  }
+  .uber-driver-marker{
+    width:44px;height:44px;border-radius:50%;
+    background:#111;color:#fff;
+    display:grid;place-items:center;
+    font-size:22px;
+    border:4px solid #fff;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);
+  }
+  .locate{
+    background:#fff!important;
+    box-shadow:0 3px 14px rgba(0,0,0,.16)!important;
+  }
+
+  .fieldlabel{display:block;font-size:12px;font-weight:900;margin:16px 2px 7px;color:#555}
+  select.search{appearance:none}
+  .driver-top{padding:28px 20px 12px;display:flex;justify-content:space-between;align-items:center;background:#fff}
+  .driver-top h1{margin:3px 0}
+  .compact{width:auto!important;padding:10px 12px!important}
+  .driver-online-card{background:#111;color:#fff;border-radius:18px;padding:18px;display:flex;justify-content:space-between;align-items:center}
+  .driver-online-card .muted{color:#bbb}
+  .switch input{display:none}.switch span{display:block;width:48px;height:28px;border-radius:20px;background:#555;position:relative}
+  .switch span:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
+  .switch input:checked+span{background:#20a464}.switch input:checked+span:after{left:23px}
+  .driver-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+  .driver-stats div{background:#fff;border:1px solid #e7e7e7;border-radius:15px;padding:15px;text-align:center}
+  .driver-stats strong,.driver-stats small{display:block}.driver-stats small{color:#777;margin-top:3px}
+  .driver-empty{text-align:center;padding:55px 25px}.driver-map-mini{width:74px;height:74px;margin:auto;background:#eee;border-radius:50%;display:grid;place-items:center;font-size:30px}
+
+  /* COMPLETE ROLE-AWARE NAVIGATION */
+  .role-nav{position:absolute;left:0;right:0;bottom:0;height:76px;background:#fff;border-top:1px solid #e6e8eb;z-index:300;display:grid}
+  .role-nav.customer{grid-template-columns:repeat(3,1fr)}
+  .role-nav.driver{grid-template-columns:repeat(4,1fr)}
+  .role-nav button{border:0;background:#fff;font-size:11px;font-weight:850}
+  .role-nav button span{display:block;font-size:21px;margin-bottom:3px}
+  .role-nav button.active{font-weight:950}
+  .driver-page{display:none;padding:84px 18px 96px;min-height:100vh;background:#f7f8fa}
+  .driver-page.active{display:block}
+  .driver-summary{background:#111;color:#fff;border-radius:20px;padding:20px;margin-bottom:14px}
+  .driver-summary h1{margin:3px 0 14px;color:#fff}.driver-summary .muted{color:#bbb}
+  .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .summary-grid div{background:#ffffff18;border-radius:14px;padding:12px;text-align:center}
+  .summary-grid strong,.summary-grid small{display:block}.summary-grid small{color:#bbb;margin-top:3px}
+  .driver-list-card{background:#fff;border:1px solid #e6e8eb;border-radius:17px;padding:15px;margin:10px 0}
+  .driver-list-card .row + .row{border-top:1px solid #eee;margin-top:10px;padding-top:10px}
+  .mode-badge{display:inline-block;background:#111;color:#fff;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900}
+
+  .mini-actions{display:flex;gap:8px;margin-top:12px}
+  .mini-actions button{flex:1}
+  .active-order{border:2px solid #111!important}
+  .payment-choice{display:flex;align-items:center;justify-content:space-between;padding:15px;border:1px solid #e4e6e8;border-radius:14px;margin:9px 0;background:#fff}
+  .payment-choice.selected{border:2px solid #111}
+  .hidden{display:none!important}
+
+  /* iPhone-safe ordering flow */
+  #selector .sheet,
+  #confirm .body,
+  #locationScreen .body{
+    padding-bottom:140px!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #selector{
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #selector .sheet{
+    max-height:none!important;
+    min-height:52vh;
+  }
+
+  #chooseBtn,
+  #confirm button.primary,
+  #confirm .primary{
+    position:sticky!important;
+    bottom:88px!important;
+    z-index:420!important;
+    margin-top:16px!important;
+    box-shadow:0 8px 28px rgba(0,0,0,.18);
+  }
+
+  /* Ensure the selector CTA cannot be hidden by the role nav */
+  #selector #chooseBtn{
+    display:block!important;
+    width:100%!important;
+    min-height:56px!important;
+  }
+
+  @supports(padding:max(0px)){
+    #selector .sheet,
+    #confirm .body,
+    #locationScreen .body{
+      padding-bottom:max(140px, calc(120px + env(safe-area-inset-bottom)))!important;
+    }
+    #chooseBtn,
+    #confirm button.primary,
+    #confirm .primary{
+      bottom:max(88px, calc(76px + env(safe-area-inset-bottom)))!important;
+    }
+  }
+
+  /* Final iPhone layout correction */
+  #confirm .body{
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:calc(100vh - 155px)!important;
+    padding:28px 20px calc(115px + env(safe-area-inset-bottom))!important;
+  }
+  #confirm button.primary,
+  #confirm .primary{
+    position:relative!important;
+    bottom:auto!important;
+    margin-top:24px!important;
+    flex:none!important;
+    box-shadow:none!important;
+  }
+
+  #tracking{
+    overflow:hidden!important;
+  }
+  #tracking .sheet{
+    max-height:54vh!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:18px!important;
+  }
+  #tracking .drivercard{
+    padding:14px!important;
+  }
+  #tracking .drivercard .avatar{
+    width:48px!important;height:48px!important;
+  }
+  #tracking .stages{
+    margin-bottom:4px!important;
+  }
+  #tracking .sheet h1{
+    margin:10px 0 4px!important;
+  }
+  #tracking .sheet .card{
+    margin-top:10px!important;
+  }
+
+  /* Bottom navigation should not appear on modal ordering/tracking screens. */
+  body:has(#selector.active) #customerNav,
+  body:has(#confirm.active) #customerNav,
+  body:has(#tracking.active) #customerNav,
+  body:has(#locationScreen.active) #customerNav,
+  body:has(#mapPicker.active) #customerNav{
+    display:none!important;
+  }
+
+  /* Mobile modal/navigation cleanup */
+  body:has(#auth.active) #customerNav,
+  body:has(#accountPanel.active) #customerNav,
+  body:has(#driverOnboarding.active) #customerNav{
+    display:none!important;
+  }
+
+  /* Tanker selector: keep CTA visible without covering payment row */
+  #selector .sheet{
+    padding-bottom:30px!important;
+  }
+  #selector #chooseBtn{
+    position:relative!important;
+    bottom:auto!important;
+    margin-top:18px!important;
+    box-shadow:none!important;
+  }
+
+  /* Ensure selector can scroll naturally when screen is short */
+  #selector{
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #selector .sheet{
+    overflow:visible!important;
+  }
+
+  /* Auth should occupy the screen cleanly without customer nav underneath */
+  #auth .body{
+    padding-bottom:36px!important;
+  }
+
+  .auth-mode-tabs{display:grid;grid-template-columns:1fr 1fr;background:#ececec;border-radius:14px;padding:4px;margin-top:2px}
+  .auth-mode{border:0;background:transparent;padding:12px;border-radius:11px;font-size:16px;font-weight:850}
+  .auth-mode.active{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+  .tanker-brand-icon{
+    width:72px!important;
+    height:72px!important;
+    object-fit:contain!important;
+    display:block!important;
+  }
+  .tanker .icon,
+  .tanker .tanker-icon,
+  .vehicle-icon{
+    display:grid!important;
+    place-items:center!important;
+    overflow:hidden!important;
+  }
+
+  /* Full home wordmark: no clipping */
+  .top.brand-only{height:auto!important;min-height:104px!important;padding:12px 18px 8px!important;overflow:visible!important}
+  .app-logo-frame{width:230px!important;height:92px!important;overflow:visible!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  .app-logo{position:static!important;top:auto!important;width:230px!important;height:92px!important;object-fit:contain!important;object-position:center!important;display:block!important}
+
+  /* Branded tanker artwork should float cleanly with no emoji-style tile */
+  .tanker .icon,
+  .tanker .tanker-icon,
+  .vehicle-icon{
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+  }
+  .tanker-brand-icon{
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+
+  /* Home logo: compact, fully visible, and not allowed to spill into the map */
+  .top.brand-only{
+    height:104px!important;
+    min-height:104px!important;
+    max-height:104px!important;
+    padding:8px 18px!important;
+    overflow:hidden!important;
+    background:#fff!important;
+  }
+  .app-logo-frame{
+    width:205px!important;
+    height:88px!important;
+    overflow:hidden!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .app-logo{
+    position:static!important;
+    width:200px!important;
+    height:82px!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    display:block!important;
+  }
+
+  /* Driver navigation: one page system, always clickable */
+  #driverNav{
+    position:fixed!important;
+    left:0!important;right:0!important;bottom:0!important;
+    z-index:9999!important;
+    pointer-events:auto!important;
+    height:calc(76px + env(safe-area-inset-bottom))!important;
+    padding-bottom:env(safe-area-inset-bottom)!important;
+  }
+  #driverNav button{
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+    position:relative!important;
+    z-index:10000!important;
+  }
+  #driverDashboard,
+  #driverActivityPage,
+  #driverEarningsPage,
+  #driverAccountPage{
+    position:absolute!important;
+    inset:0!important;
+    bottom:calc(76px + env(safe-area-inset-bottom))!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    background:#f7f8fa!important;
+    padding-bottom:24px!important;
+    z-index:20!important;
+  }
+  #driverDashboard{padding:0!important}
+  .driver-success{
+    margin:12px 18px 0;
+    background:#eaf7ef;
+    border:1px solid #b8e1c7;
+    border-radius:16px;
+    padding:14px 16px;
+  }
+  .driver-success strong,.driver-success span{display:block}
+  .driver-success span{margin-top:3px;color:#55705e;font-size:13px}
+
+  .role-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:10000!important;height:calc(76px + env(safe-area-inset-bottom))!important;padding-bottom:env(safe-area-inset-bottom)!important;background:#fff!important}
+  .role-nav button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer}
+  .driver-page{position:absolute!important;inset:0!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;background:#f7f8fa!important;display:none}
+  .driver-page.active{display:block!important}
+  #driverDashboard{padding:0!important}
+  #driverActivityPage,#driverEarningsPage,#driverAccountPage{padding:26px 18px 28px!important}
+  .driver-top{position:sticky;top:0;z-index:30}
+
+  /* V1.1 publish-readiness flow */
+  .driver-docs-card{display:flex;flex-direction:column;gap:8px}
+  .driver-doc-input{padding:11px!important;background:#fff!important}
+  #orderAuthNotice{border:1px solid #e1e1e1;background:#fafafa}
+
+
+  .warning-card{background:#fff7e8;border:1px solid #f1d39a}
+  .danger-btn{background:#fff;border:1px solid #d7d7d7;color:#b00020}
+  .support-list button{width:100%;text-align:left}
+
+
+
+/* ---- extracted style block ---- */
+
+
+.live-location-results{
+  margin-top:8px;border:1px solid #e8e8e8;border-radius:16px;background:#fff;
+  overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.08)
+}
+.live-location-result{
+  width:100%;background:#fff;border:0;border-bottom:1px solid #eee;padding:14px 15px;
+  display:flex;gap:12px;align-items:flex-start;text-align:left;font:inherit;color:#111
+}
+.live-location-result:last-child{border-bottom:0}
+.live-location-result .locpin{font-size:18px;line-height:1.2}
+.live-location-result strong{display:block;font-size:15px;line-height:1.25}
+.live-location-result small{display:block;color:#737373;margin-top:3px;line-height:1.3}
+.live-location-state{padding:15px;color:#666;font-size:14px}
+.route-info-pill{
+  position:absolute;z-index:8;top:76px;left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:999px;padding:8px 13px;font-weight:800;font-size:13px;
+  box-shadow:0 5px 18px rgba(0,0,0,.14);white-space:nowrap
+}
+
+
+/* ---- extracted style block ---- */
+
+
+/* Sahreej V1.7 — map-first tracking */
+#tracking .fullmap{
+  top:0!important;
+  bottom:auto!important;
+  height:56vh!important;
+  min-height:300px!important;
+}
+#tracking .select-sheet{
+  top:50vh!important;
+  bottom:0!important;
+  max-height:none!important;
+  height:50vh!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch;
+  padding:18px 18px 26px!important;
+  border-radius:26px 26px 0 0!important;
+  box-shadow:0 -8px 28px rgba(0,0,0,.10)!important;
+}
+#tracking .select-sheet::before{
+  content:"";
+  display:block;
+  width:42px;
+  height:5px;
+  border-radius:999px;
+  background:#d7d7d7;
+  margin:-6px auto 12px;
+}
+#tracking #liveEta{
+  top:18px!important;
+  left:76px!important;
+}
+#tracking .drivercard,
+#tracking .card{
+  margin-top:10px!important;
+}
+#tracking #realRoutePill{
+  top:72px!important;
+}
+@media (orientation:landscape){
+  #tracking .fullmap{height:62vh!important;min-height:220px!important}
+  #tracking .select-sheet{top:58vh!important;height:42vh!important}
+}
+
+
+/* ---- extracted style block ---- */
+
+
+/* Sahreej V1.8 — cleaner tracking UI */
+#tracking #realRoutePill{display:none!important} /* remove duplicate ETA pill */
+#tracking .fullmap{height:60vh!important}
+#tracking .select-sheet{
+  top:56vh!important;
+  height:44vh!important;
+  padding-top:16px!important;
+}
+@media (orientation:landscape){
+  #tracking .fullmap{height:68vh!important}
+  #tracking .select-sheet{top:64vh!important;height:36vh!important}
+}
+/* Floating recenter control */
+#sahreejRecenterBtn{
+  position:absolute;z-index:10;right:16px;bottom:18px;
+  width:44px;height:44px;border:0;border-radius:50%;
+  background:#fff;box-shadow:0 3px 14px rgba(0,0,0,.2);
+  font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center
+}
+
+
+/* ---- extracted style block ---- */
+
+
+#sahreejRealOnlineCard{margin:22px;border-radius:20px;background:#111;color:#fff;padding:18px 20px}
+#sahreejRealOnlineCard .sr-row{display:flex;align-items:center;justify-content:space-between;gap:18px}
+#sahreejRealOnlineCard .sr-title{font-weight:800;font-size:17px}
+#sahreejRealOnlineCard .sr-sub{opacity:.78;margin-top:5px;line-height:1.35}
+#sahreejRealOnlineSwitch{width:52px;height:30px;accent-color:#111}
+
+
+/* ---- extracted style block ---- */
+
+
+/* V8.4: canonical driver availability control lives in #driverDashboard .driver-online-card.
+   Legacy availability cards stay hidden. */
+#driverOnlineCard,#driverAvailabilityCard,.availability-card,#sahreejRealOnlineCard {
+  display:none !important;
+}
+#driverDashboard .driver-online-card {
+  display:flex !important;
+  visibility:visible !important;
+}
+
+
+/* ---- extracted style block ---- */
+
+
+/* V4.0: driver session stays driver-only until sign out */
+#driverDashboard button[onclick*="customer"],
+#driverDashboard button[onclick*="Customer"],
+#driverAccountPage [onclick*="customer"],
+#driverAccountPage [onclick*="Customer"]{
+  display:none !important;
+}
+
+
+/* ---- extracted style block ---- */
+
+
+/* SAHREEJ V4.5 — production-facing account cleanup */
+#sahreejDevAuthBadge,
+#sahreejAdminEntry,
+#adminDriverReviewScreen {
+  display:none !important;
+}
+
+
+/* ---- extracted style block ---- */
+
+
+#sahreejAcceptErrorBox{
+  margin:12px 16px;padding:12px 14px;border:1px solid #f1b4b4;
+  background:#fff6f6;border-radius:14px;color:#9b1c1c;font-size:13px;
+  word-break:break-word;display:none
+}
+
+
+/* ---- extracted style block ---- */
+
+
+/* V5.0 audit: approved application detail belongs in Account, not Driver Home */
+#driverHome #driverApplicationPanel.approved-home-hidden{display:none!important}
+
+
+/* ---- extracted style block ---- */
+
+
+/* V5.1 UI corrections */
+#driverDashboard #driverApplicationReviewPanel{display:none!important}
+#driverAccountPage #driverApplicationReviewPanel{display:block!important}
+
+
+/* ---- extracted style block ---- */
+
+
+/* =========================================================
+   SAHREEJ V6 — CLEAN RUNTIME SURFACE
+   Hide legacy prototype cards and internal development UI.
+   ========================================================= */
+#driverRequest,
+#driverActive,
+#sahreejDevAuthBadge,
+#sahreejAdminEntry,
+#adminDriverReviewScreen,
+#driverDashboard #driverApplicationReviewPanel {
+  display:none !important;
+}
+#driverAccountPage #driverApplicationReviewPanel {
+  display:block !important;
+}
+#sahreejRuntimeError {
+  display:none;
+  margin:12px 16px;
+  padding:12px 14px;
+  border:1px solid #efb3b3;
+  background:#fff6f6;
+  border-radius:14px;
+  color:#9d1b1b;
+  font-size:13px;
+  word-break:break-word;
+}
+
+/* ===== V8.12 UI/UX POLISH ===== */
+:root{--blue:#1677ff;--ink:#111;--muted:#707070;--surface:#fff;--soft:#f5f6f7;--line:#e5e5e5}
+.nav-svg{display:block;width:24px;height:24px;margin:0 auto 4px}.nav-svg svg{width:100%;height:100%;fill:currentColor}.icon-svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.role-nav button{min-height:60px}.role-nav button span{line-height:1}.role-nav{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.route-map{height:220px;border-radius:20px;overflow:hidden;margin:14px 0 10px;background:#eef1f3;border:1px solid #e8eaed}
+.sahreej-map-icon-wrap{background:transparent!important;border:0!important}.sahreej-tanker-map-icon{width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid #111;box-shadow:0 4px 14px #0003;display:grid;place-items:center;overflow:hidden}.sahreej-tanker-map-icon img{width:39px;height:39px;object-fit:contain}.sahreej-customer-map-icon{width:42px;height:42px;filter:drop-shadow(0 3px 6px #0004)}.sahreej-customer-map-icon svg{width:100%;height:100%;fill:#1677ff;stroke:#fff;stroke-width:1.6}.sahreej-customer-map-icon circle{fill:#fff;stroke:none}
+#realDriverOfferCard{box-shadow:0 14px 40px #00000014}.offer-title-row{display:flex;justify-content:space-between;gap:12px;align-items:start}.offer-countdown{font-variant-numeric:tabular-nums}.offer-route-meta{font-size:17px;font-weight:750;color:#555;margin-top:5px}.offer-facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.offer-fact{background:#f5f6f7;border-radius:15px;padding:11px 12px}.offer-fact small{display:block;color:#777;font-size:12px;margin-bottom:2px}.offer-fact strong{font-size:17px}.offer-address{font-weight:850;font-size:19px;margin-top:12px;line-height:1.25}
+.tanker-options{min-height:120px}.pricing-loading,.pricing-empty{display:flex;align-items:center;gap:10px;padding:20px 8px;color:#666}.spinner{width:19px;height:19px;border:2px solid #ddd;border-top-color:#111;border-radius:50%;animation:sahSpin .8s linear infinite}@keyframes sahSpin{to{transform:rotate(360deg)}}
+.tanker{min-height:76px}.tanker .price{font-size:19px}.tanker-brand-icon{object-fit:contain}.select-sheet{padding-bottom:max(24px,calc(18px + env(safe-area-inset-bottom)))}
+.driver-job-active .driver-stats{display:none!important}.driver-job-card{margin:12px 16px 18px;padding:18px;border:1px solid #ddd;border-radius:24px;background:#fff;box-shadow:0 12px 34px #0000000d}.driver-job-header{display:flex;justify-content:space-between;gap:12px;align-items:start}.driver-job-main{font-size:22px;font-weight:900;margin-top:9px}.driver-job-address{color:#555;margin-top:3px;line-height:1.35}.driver-job-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.driver-job-meta>div{background:#f5f6f7;border-radius:15px;padding:11px}.driver-job-meta small{display:block;color:#777}.driver-job-actions{display:grid;gap:9px;margin-top:14px}.navigate-btn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:#111;background:#f1f1f1;border-radius:16px;padding:14px 16px;font-weight:850}.navigate-btn svg{width:20px;height:20px;fill:currentColor}
+.tracking-driver-card{margin:14px 0;padding:14px;border:1px solid #e5e5e5;border-radius:18px;background:#fff}.tracking-driver-head{display:flex;align-items:center;gap:12px}.tracking-driver-icon{width:52px;height:52px;border-radius:15px;background:#f3f7ff;display:grid;place-items:center;flex:0 0 auto}.tracking-driver-icon img{width:46px;height:46px;object-fit:contain}.tracking-driver-copy{min-width:0;flex:1}.tracking-driver-copy strong{display:block;font-size:18px}.tracking-driver-actions{display:flex;gap:8px;margin-top:12px}.tracking-driver-actions a,.tracking-driver-actions button{flex:1;text-align:center;text-decoration:none;border:0;border-radius:14px;background:#f2f2f2;color:#111;padding:11px;font-weight:800}.trip-progress{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:13px 0 4px}.trip-progress span{height:4px;border-radius:999px;background:#ddd}.trip-progress span.on{background:#1677ff}
+#trackingSheet{max-height:min(53vh,520px);overflow:auto;-webkit-overflow-scrolling:touch}#trackMap{min-height:48vh}.screen .head{padding-top:max(14px,env(safe-area-inset-top))}.primary,.secondary,.accountbtn,.chip,.pay{min-height:48px}.search{min-height:48px}
+@media(max-width:430px){.offer-facts,.driver-job-meta{grid-template-columns:1fr 1fr}.route-map{height:190px}.driver-job-card,#realDriverOfferCard{margin-left:12px!important;margin-right:12px!important}.select-sheet h1{font-size:26px}.tracking-driver-actions{flex-direction:column}}
+@media(max-width:360px){.offer-facts,.driver-job-meta{grid-template-columns:1fr}.role-nav button{font-size:11px}}
+
+/* V8.15 driver account: documents + settlements */
+.driver-account-loading,.driver-account-error,.driver-account-empty{padding:28px 8px;text-align:center;display:flex;flex-direction:column;gap:9px;align-items:center}.driver-account-spinner{width:28px;height:28px;border:3px solid #e3e7ec;border-top-color:#111;border-radius:50%;animation:sahreejSpin .75s linear infinite}@keyframes sahreejSpin{to{transform:rotate(360deg)}}.driver-account-error button{margin-top:8px}.driver-account-hero{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;border-radius:18px;background:#101010;color:#fff}.driver-account-hero small{display:block;font-size:11px;letter-spacing:.08em;opacity:.65}.driver-account-hero strong{display:block;font-size:22px;margin-top:4px}.driver-status-pill{padding:7px 10px;border-radius:999px;background:#fff;color:#111;font-size:12px;font-weight:800}.driver-account-section-title{font-size:18px;font-weight:900;margin:22px 0 10px}.driver-doc-list{display:grid;gap:10px}.driver-doc-row{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #e4e6e9;border-radius:16px;background:#fff}.driver-doc-row.verified{border-color:#cfe8d7;background:#f4fbf6}.driver-doc-row.rejected{border-color:#efcaca;background:#fff6f6}.driver-doc-row.pending{border-color:#eadca9;background:#fffaf0}.driver-doc-icon{width:38px;height:38px;border-radius:12px;background:#eef1f4;display:grid;place-items:center;font-weight:900;flex:none}.driver-doc-main{min-width:0;flex:1}.driver-doc-main strong,.driver-doc-main span,.driver-doc-main small{display:block}.driver-doc-main span{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px}.driver-doc-main small{font-size:12px;color:#777;margin-top:3px}.driver-doc-main .doc-reason{color:#a52b2b;white-space:normal}.doc-open-btn{width:auto!important;padding:9px 13px!important;border-radius:11px!important;flex:none}.driver-account-note,.driver-account-warning{margin-top:14px;padding:13px 14px;border-radius:14px;background:#f5f6f7;color:#555;font-size:13px;line-height:1.4}.driver-account-warning{background:#fff3f3;color:#7b2020}.driver-account-warning strong,.driver-account-warning span{display:block}.settlement-due-card{padding:20px;border-radius:20px;background:#101010;color:#fff}.settlement-due-card small{font-size:11px;letter-spacing:.08em;opacity:.65}.settlement-due-card strong{display:block;font-size:34px;margin:6px 0}.settlement-due-card span{font-size:12px;opacity:.72;line-height:1.4}.settlement-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.settlement-grid>div,.driver-account-detail-card>div{padding:15px;border-radius:16px;background:#f5f6f7}.settlement-grid small,.driver-account-detail-card small{display:block;color:#777;font-size:12px}.settlement-grid strong,.driver-account-detail-card strong{display:block;font-size:18px;margin-top:5px}.settlement-list{display:grid;gap:9px}.settlement-row{display:flex;justify-content:space-between;gap:12px;padding:14px;border:1px solid #e5e7ea;border-radius:15px}.settlement-row div{min-width:0}.settlement-row strong,.settlement-row span{display:block}.settlement-row span{font-size:12px;color:#777;margin-top:4px}.driver-account-detail-card{display:grid;gap:10px}
+
+/* V8.17 in-app document viewer + settlement clarity */
+.driver-doc-back{width:auto!important;padding:10px 14px!important;margin:0 0 12px;border-radius:12px!important;background:#f1f3f5!important;color:#111!important}.driver-doc-preview-meta{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 4px}.driver-doc-preview-meta strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.driver-doc-preview-meta span{font-size:12px;font-weight:800;color:#258447}.driver-doc-preview{width:100%;min-height:55vh;background:#eef1f4;border-radius:18px;overflow:hidden;border:1px solid #e1e5e9;display:flex;align-items:center;justify-content:center}.driver-doc-preview-image{display:block;width:100%;height:auto;max-height:68vh;object-fit:contain;background:#fff}.driver-doc-preview-frame{width:100%;height:68vh;border:0;background:#fff}.driver-doc-external{display:block;margin-top:12px;padding:14px;border-radius:14px;background:#111;color:#fff;text-align:center;font-weight:900;text-decoration:none}.settlement-summary-line{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 3px;border-bottom:1px solid #eceff2;font-size:14px}.settlement-summary-line strong{font-size:15px}
+
+/* V8.19 real driver availability */
+.tanker.tanker-unavailable{opacity:.52;cursor:not-allowed;background:#f5f5f5;border-color:#e6e6e6}
+.tanker.tanker-unavailable .price{opacity:.75}
+.tanker.tanker-unavailable:hover{transform:none}
+
+
+/* V8.20 — responsive phone + tablet hardening */
+html,body{width:100%;min-height:100%;overflow-x:hidden}
+body{min-height:100dvh}
+.app{
+  width:100%;
+  min-height:100dvh;
+  max-width:480px;
+  overflow:hidden;
+}
+img,video,canvas,iframe{max-width:100%}
+button,input,select,textarea{max-width:100%}
+.where,.row,.profile,.tracking-driver-head,.driver-job-header,.settlement-row{min-width:0}
+.where>div,.row>div,.profile>div,.tracking-driver-copy,.driver-job-header>div,.settlement-row>div{min-width:0}
+#homeAddress,#trackAddress,.driver-job-address,.offer-address,.muted,strong,small{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.screen{min-height:100dvh}
+.screen .body{min-width:0}
+.role-nav{
+  left:0!important;
+  right:0!important;
+  transform:none!important;
+  width:min(100%,480px)!important;
+  max-width:480px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.role-nav.customer{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.role-nav.driver{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.role-nav button{min-width:0!important}
+@media (min-width:600px){
+  .role-nav{
+    width:min(100%,720px)!important;
+    max-width:720px!important;
+  }
+}
+.toast{
+  width:max-content;
+  max-width:min(92vw,440px);
+  text-align:center;
+  white-space:normal;
+  top:max(20px,calc(env(safe-area-inset-top) + 10px));
+}
+input,select,textarea{font-size:16px}
+.primary,.secondary,.accountbtn,.role-nav button,.icon,.back{touch-action:manipulation}
+.driver-profile-photo-wrap,.driver-tanker-photo-wrap{min-width:0}
+.driver-profile-photo-wrap input,.driver-tanker-photo-wrap input{width:100%;min-width:0}
+.driver-doc-preview-frame{min-height:420px}
+
+@media (min-width:600px){
+  .app{max-width:720px}
+  .role-nav{max-width:720px!important}
+  .top.brand-only{height:112px!important;max-height:112px!important}
+  .mapbox{height:min(46dvh,520px);min-height:340px}
+  .sheet{padding-left:28px;padding-right:28px}
+  #activity,#account{padding-left:28px!important;padding-right:28px!important}
+  #driverActivityPage,#driverEarningsPage,#driverAccountPage{padding-left:28px!important;padding-right:28px!important}
+  .body{padding-left:28px;padding-right:28px}
+  .select-sheet{left:50%!important;right:auto!important;width:min(100%,720px)!important;transform:translateX(-50%)}
+  #tracking .select-sheet{width:100%!important}
+  .driver-stats,.summary-grid{gap:12px}
+  .driver-account-detail-card{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .settlement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media (max-width:390px){
+  .top.brand-only{height:92px!important;min-height:92px!important;max-height:92px!important}
+  .app-logo-frame{height:76px!important;width:180px!important}
+  .app-logo{height:72px!important;width:176px!important}
+  .sheet{padding-left:14px;padding-right:14px}
+  .body{padding-left:14px;padding-right:14px}
+  #activity,#account{padding-left:14px!important;padding-right:14px!important}
+  #driverActivityPage,#driverEarningsPage,#driverAccountPage{padding-left:14px!important;padding-right:14px!important}
+  .driver-online-card{gap:10px;padding:15px}
+  .driver-online-card>div{min-width:0}
+  .driver-stats div{padding:12px 8px}
+  .driver-doc-row{align-items:flex-start;flex-wrap:wrap}
+  .doc-open-btn{margin-left:50px}
+  .driver-profile-photo-wrap,.driver-tanker-photo-wrap{align-items:flex-start;flex-direction:column}
+  .driver-profile-photo-circle{width:84px;height:84px;flex-basis:84px}
+  .driver-tanker-photo-frame{width:120px;height:80px;flex-basis:80px}
+  .settlement-row{flex-direction:column}
+}
+
+@media (max-width:340px){
+  h1{font-size:24px}
+  .sheet h1{font-size:26px}
+  .phonebox{grid-template-columns:64px minmax(0,1fr)}
+  .phonebox span,.phonebox input{padding:13px 10px}
+  .driver-stats strong,.summary-grid strong{font-size:14px}
+  .driver-stats small,.summary-grid small{font-size:10px}
+  .tanker{grid-template-columns:50px minmax(0,1fr) auto;padding:10px 8px}
+  .tanker-brand-icon{width:54px!important;height:54px!important}
+  .price{font-size:17px}
+}
+
+@media (orientation:landscape) and (max-height:520px){
+  .top.brand-only{height:76px!important;min-height:76px!important;max-height:76px!important}
+  .app-logo-frame{height:64px!important}
+  .app-logo{height:60px!important}
+  .mapbox{height:52dvh;min-height:190px}
+  .sheet{min-height:220px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  .screen .head{min-height:56px;height:auto}
+  #tracking .fullmap{height:62dvh!important;min-height:180px!important}
+  #tracking .select-sheet{top:54dvh!important;height:46dvh!important;min-height:0!important}
+  .route-map{height:150px}
+  .driver-empty{padding:28px 20px}
+  #driverActivityPage,#driverEarningsPage,#driverAccountPage{padding-top:18px!important}
+}
+
+@supports(height:100dvh){
+  .app,.screen,.driver-page{min-height:100dvh}
+  #driverDashboard,#driverActivityPage,#driverEarningsPage,#driverAccountPage{
+    height:calc(100dvh - 76px - env(safe-area-inset-bottom));
+  }
+}
+
+/* V8.52 accessibility semantics for button-backed interactive rows */
+button.where,button.pay,button.place{width:100%;border:0;text-align:left;font:inherit;color:inherit}
+button.where:focus-visible,button.pay:focus-visible,button.place:focus-visible,.accountbtn:focus-visible,.role-nav button:focus-visible,.primary:focus-visible,.secondary:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+button:disabled{cursor:default;opacity:.62}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* V8.58 accessible tanker option buttons */
+button.tanker{width:100%;font:inherit;text-align:left;color:inherit;cursor:pointer}
+button.tanker:disabled{cursor:default;opacity:.62}
+button.tanker:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+
+
+/* V8.61 iPhone tracking + navigation correction */
+@media (max-width: 600px){
+  /* Keep primary customer navigation available during live tracking. */
+  body:has(#tracking.active) #customerNav{
+    display:grid!important;
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    z-index:10050!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  /* Tracking occupies the usable app area above the fixed customer nav. */
+  #tracking.active{
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    bottom:calc(76px + env(safe-area-inset-bottom))!important;
+    height:auto!important;
+    overflow:hidden!important;
+  }
+
+  #tracking .fullmap{
+    bottom:0!important;
+  }
+
+  #trackingSheet{
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    max-height:min(66dvh, 620px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:18px 18px max(24px, env(safe-area-inset-bottom))!important;
+    border-radius:26px 26px 0 0!important;
+    box-sizing:border-box!important;
+  }
+
+  #trackingSheet > *{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  #tracking .card .row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:start!important;
+    gap:14px!important;
+  }
+
+  #tracking .card .row > div{
+    min-width:0!important;
+  }
+
+  #tracking .card .row > div strong,
+  #tracking #trackAddress{
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+
+  #tracking .card .row > strong:last-child,
+  #trackPrice{
+    white-space:nowrap!important;
+    min-width:max-content!important;
+    text-align:right!important;
+  }
+
+  #tracking .delivery-proof-card{
+    margin:12px 0!important;
+    padding:15px 14px!important;
+    border-radius:20px!important;
+  }
+
+  #tracking .delivery-proof-card h3{
+    font-size:16px!important;
+    margin:0 0 3px!important;
+  }
+
+  #tracking .delivery-pin{
+    font-size:32px!important;
+    line-height:1!important;
+    letter-spacing:7px!important;
+    padding:8px 0 9px!important;
+  }
+
+  #tracking .delivery-proof-card p{
+    font-size:12px!important;
+    line-height:1.4!important;
+    margin:0 auto!important;
+    max-width:32em!important;
+  }
+
+  #tracking .trip-progress{
+    margin:14px 8px 20px!important;
+  }
+
+  #tracking .live-stage-labels{
+    margin:-13px 0 15px!important;
+    padding:0 2px!important;
+    font-size:10px!important;
+    line-height:1.15!important;
+  }
+
+  #tracking .driver-public-card{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+
+  #tracking .driver-public-tanker{
+    max-height:180px!important;
+    overflow:hidden!important;
+  }
+
+  #tracking .driver-public-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+
+  #tracking .tracking-status-note{
+    margin:8px 0 12px!important;
+  }
+
+  /* Prevent monetary totals from breaking into vertical characters. */
+  .customer-order-row .row > strong:last-child,
+  .order-detail-hero > strong{
+    white-space:nowrap!important;
+    flex:none!important;
+  }
+
+  #customerOrderDetail .body{
+    padding:16px 16px calc(92px + env(safe-area-inset-bottom))!important;
+  }
+}
+
+@media (max-width: 360px){
+  #trackingSheet{
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  #tracking .delivery-pin{
+    font-size:29px!important;
+    letter-spacing:6px!important;
+  }
+  #tracking .driver-public-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* V8.62 global mobile screen/viewport hardening */
+@media (max-width: 600px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+
+  body:has(.screen.active){
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+
+  .screen:not(#tracking){
+    position:fixed!important;
+    inset:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    box-sizing:border-box!important;
+  }
+
+  .screen:not(#tracking) .head{
+    position:sticky!important;
+    top:0!important;
+    z-index:200!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+    padding-top:max(14px,env(safe-area-inset-top))!important;
+    min-height:calc(66px + env(safe-area-inset-top))!important;
+    height:auto!important;
+  }
+
+  .screen:not(#tracking) .body{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  #locationScreen .body,
+  #auth .body,
+  #accountPanel .body,
+  #driverOnboarding .body,
+  #confirm .body,
+  #customerOrderDetail .body{
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+
+  #locationScreen .place,
+  #locationScreen .primary,
+  #locationScreen .search,
+  #auth .search,
+  #accountPanel .card,
+  #driverOnboarding .search,
+  #confirm .card,
+  #confirm .search{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Main tab pages also always start inside the usable viewport. */
+  #activity,#account{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+}
+
+
+/* V8.63 selector map must remain visible while tanker list scrolls */
+@media (max-width: 600px){
+  #selector.screen,
+  #selector.screen.active{
+    position:fixed!important;
+    inset:0!important;
+    width:100%!important;
+    height:auto!important;
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+    background:#dfe7e2!important;
+  }
+
+  #selector > .fullmap{
+    position:absolute!important;
+    inset:0!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    height:auto!important;
+    min-height:0!important;
+    z-index:1!important;
+    display:block!important;
+    visibility:visible!important;
+    overflow:hidden!important;
+  }
+
+  #selector #selectMap,
+  #selector .mapfallback{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:100%!important;
+  }
+
+  #selector > .icon{
+    position:absolute!important;
+    top:max(18px,calc(env(safe-area-inset-top) + 10px))!important;
+    left:18px!important;
+    z-index:30!important;
+  }
+
+  #selector > .select-sheet{
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    top:auto!important;
+    z-index:20!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:min(68dvh,650px)!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:20px 18px max(22px,env(safe-area-inset-bottom))!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    box-sizing:border-box!important;
+    border-radius:28px 28px 0 0!important;
+    box-shadow:0 -10px 30px rgba(0,0,0,.12)!important;
+  }
+
+  #selector .tanker-options{
+    width:100%!important;
+    max-width:100%!important;
+  }
+
+  #selector .pay{
+    position:relative!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+    margin-top:12px!important;
+  }
+
+  #selector #chooseBtn{
+    position:relative!important;
+    bottom:auto!important;
+    width:100%!important;
+    margin-top:14px!important;
+    margin-bottom:0!important;
+  }
+
+  /* Leave a useful map preview visible above the sheet even with long lists. */
+  #selector > .select-sheet{
+    max-height:64dvh!important;
+  }
+}
+
+@media (max-height: 700px) and (max-width:600px){
+  #selector > .select-sheet{
+    max-height:68dvh!important;
+  }
+}
+
+/* V8.64 mobile map ratio + draggable sheets */
+@media (max-width:600px){
+  /* Keep the normal home map useful without letting it consume most of the phone. */
+  .mapbox{
+    height:clamp(230px,34dvh,310px)!important;
+    min-height:230px!important;
+    max-height:310px!important;
+  }
+
+  #tracking.map-sheet-managed,
+  #selector.map-sheet-managed{
+    --sahreej-sheet-top:42dvh;
+    overflow:hidden!important;
+  }
+
+  #tracking.map-sheet-managed .fullmap,
+  #selector.map-sheet-managed .fullmap{
+    top:0!important;
+    bottom:auto!important;
+    height:calc(var(--sahreej-sheet-top) + 30px)!important;
+    min-height:0!important;
+    max-height:none!important;
+    transition:height .22s ease!important;
+  }
+
+  #tracking.map-sheet-managed #trackingSheet,
+  #selector.map-sheet-managed .select-sheet{
+    top:var(--sahreej-sheet-top)!important;
+    right:0!important;
+    bottom:0!important;
+    left:0!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    padding-top:42px!important;
+    padding-bottom:max(24px,calc(18px + env(safe-area-inset-bottom)))!important;
+    border-radius:26px 26px 0 0!important;
+    transition:top .22s ease!important;
+    box-sizing:border-box!important;
+  }
+
+  #tracking.map-sheet-managed #trackingSheet::before{
+    display:none!important;
+  }
+
+  .map-sheet-grabber{
+    position:absolute!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    z-index:30!important;
+    width:100%!important;
+    height:38px!important;
+    min-height:38px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:26px 26px 0 0!important;
+    background:transparent!important;
+    touch-action:none!important;
+    cursor:grab!important;
+  }
+
+  .map-sheet-grabber::before{
+    content:""!important;
+    position:absolute!important;
+    top:10px!important;
+    left:50%!important;
+    width:48px!important;
+    height:5px!important;
+    transform:translateX(-50%)!important;
+    border-radius:999px!important;
+    background:#c9c9c9!important;
+  }
+
+  .map-sheet-grabber:active{cursor:grabbing!important}
+  .map-sheet-grabber:focus-visible{outline:3px solid #1677ff!important;outline-offset:-3px!important}
+
+  #tracking.map-sheet-dragging #trackingSheet,
+  #selector.map-sheet-dragging .select-sheet,
+  #tracking.map-sheet-dragging .fullmap,
+  #selector.map-sheet-dragging .fullmap{
+    transition:none!important;
+  }
+}
+
+@media (max-width:390px){
+  #tracking.map-sheet-managed,
+  #selector.map-sheet-managed{
+    --sahreej-sheet-top:40dvh;
+  }
+}
+
+@media (orientation:landscape) and (max-height:520px){
+  #tracking.map-sheet-managed,
+  #selector.map-sheet-managed{
+    --sahreej-sheet-top:44dvh;
+  }
+}
