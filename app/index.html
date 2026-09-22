@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sahreej — Water Delivery</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sahreej">
+<link rel="apple-touch-icon" href="assets/logo.svg">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="css/app.css?v=864">
+</head>
+<body data-sahreej-build="8.63">
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n,b=[];
+  while(w.nextNode()){n=w.currentNode;var c=String(n.nodeValue||'').replace(/\s/g,'');if(c&&/^(?:\\n|\\r)+$/.test(c))b.push(n);}
+  b.forEach(function(x){x.remove();});
+});
+</script>
+<div id="splash" class="splash"><img src="assets/logo.svg" alt="Sahreej"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="menuov" id="menuov" onclick="closeMenu()"><div class="menu" onclick="event.stopPropagation()"><h2>Sahreej</h2><button onclick="closeMenu();showTab('home')">Home</button><button onclick="closeMenu();showTab('activity')">Activity</button><button onclick="closeMenu();showTab('account')">Account</button><button onclick="closeMenu();showTab('account')">Help</button></div></div>
+
+<div class="app">
+  <main id="home">
+    <div class="top brand-only">
+      <div class="app-logo-frame"><img class="app-logo" src="assets/logo.svg" alt="Sahreej"></div>
+    </div>
+    <div class="mapbox"><div class="mapfallback"></div><div id="homeMap"></div><button class="icon locate" onclick="useGPS(true)" aria-label="Use current location"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button></div>
+    <section class="sheet"><h1>Water, when you need it</h1>
+      <button class="where" type="button" onclick="openLocation()" aria-label="Set delivery location"><span class="dot"></span><div style="flex:1"><strong>Set delivery location</strong><small id="homeAddress">Choose where the tanker should come</small></div><b aria-hidden="true">›</b></button>
+    </section>
+  </main>
+
+  <main id="activity" style="display:none;padding:84px 18px 90px">
+    <h1>Activity</h1>
+    <div id="activeOrderArea"></div>
+    <div id="activityList"></div>
+  </main>
+  <main id="account" style="display:none;padding:84px 18px 90px">
+    <h1>Account</h1>
+    <div class="profile" id="accountProfile">
+      <div class="avatar" id="accountAvatar">G</div>
+      <div><strong id="accountName">Guest</strong><span class="muted" id="accountSub">Sign in to save your details</span></div>
+    </div>
+
+    <button class="accountbtn" id="customerAuthBtn" onclick="handleCustomerAuthButton()"><span id="customerAuthLabel">Sign in / Sign up</span><b>›</b></button>
+    <button class="accountbtn" onclick="openAccountPanel('payments')"><span>Payments</span><b>›</b></button>
+    <button class="accountbtn" onclick="openAccountPanel('places')"><span>Saved places</span><b>›</b></button>
+    <button class="accountbtn" onclick="openAccountPanel('help')"><span>Help</span><b>›</b></button>
+    <button class="accountbtn" onclick="openAccountPanel('settings')"><span>Settings</span><b>›</b></button>
+    <button class="accountbtn" onclick="openDriverEntry()"><span>Drive with Sahreej</span><b>›</b></button>
+  </main>
+
+  <nav class="role-nav customer" id="customerNav">
+      <button id="cnavHome" class="active" onclick="showCustomerTab('home')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3z"/></svg></span>Home</button>
+      <button id="cnavActivity" onclick="showCustomerTab('activity')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.4 4.2H2.7L6.3 5.6l3.6 3.6H7.4A5 5 0 1 0 12 7z"/></svg></span>Activity</button>
+      <button id="cnavAccount" onclick="showCustomerTab('account')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0z"/></svg></span>Account</button>
+    </nav>
+    <nav class="role-nav driver" id="driverNav" style="display:none">
+      <button id="dnavHome" class="active" onclick="showDriverPage('driverDashboard')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3z"/></svg></span>Home</button>
+      <button id="dnavActivity" onclick="showDriverPage('driverActivityPage')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.4 4.2H2.7L6.3 5.6l3.6 3.6H7.4A5 5 0 1 0 12 7z"/></svg></span>Activity</button>
+      <button id="dnavEarnings" onclick="showDriverPage('driverEarningsPage')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2v2.1c3 .4 5 2 5 4.4h-3c0-1.1-1.2-1.9-3-1.9s-3 .7-3 1.8c0 1 1 1.5 3.7 2.1 3.8.8 5.6 2.1 5.6 5 0 2.7-2.1 4.4-5.3 4.8V22h-2v-1.7c-3.4-.4-5.6-2.2-5.6-4.9h3c0 1.4 1.4 2.3 3.5 2.3s3.4-.8 3.4-2c0-1.1-1-1.6-3.9-2.3C7.8 12.6 6 11.2 6 8.6c0-2.4 1.9-4.1 5-4.5V2z"/></svg></span>Earnings</button>
+      <button id="dnavAccount" onclick="showDriverPage('driverAccountPage')"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0z"/></svg></span>Account</button>
+    </nav>
+
+
+  <main id="driverActivityPage" class="driver-page">
+    <h1>Activity</h1>
+    <div id="driverActiveJobCard" class="driver-list-card" style="display:none"></div>
+    <div id="driverActivityList">
+      <div class="driver-list-card">
+        <strong>No completed deliveries yet</strong>
+        <span class="muted">Your completed and cancelled deliveries will appear here.</span>
+      </div>
+    </div>
+  </main>
+
+  <main id="driverEarningsPage" class="driver-page">
+    <h1>Earnings</h1>
+    <div class="driver-summary">
+      <span class="muted">THIS WEEK</span>
+      <h1 id="driverWeekEarnings">$0</h1>
+      <div class="summary-grid">
+        <div><strong id="driverTripCount">0</strong><small>Trips</small></div>
+        <div><strong id="driverTodayEarnings">$0</strong><small>Today</small></div>
+        <div><strong id="driverTodayTrips">0</strong><small>Trips today</small></div>
+      </div>
+    </div>
+    <div class="driver-list-card">
+      <div class="row"><span>Cash collected</span><strong id="driverCashCollected">$0</strong></div>
+      <div class="row"><span>Sahreej fees due</span><strong id="driverFeesDue">$0</strong></div>
+      <div class="row"><span>Net earnings</span><strong id="driverNetEarnings">$0</strong></div>
+    </div>
+  </main>
+
+  <main id="driverAccountPage" class="driver-page">
+    <h1>Driver account</h1>
+    <div class="profile">
+      <div class="avatar" id="driverAvatar">D</div>
+      <div><strong id="driverAccountName">Driver</strong><span class="muted" id="driverAccountMeta">Approved driver</span></div>
+    </div>
+    <button class="accountbtn" onclick="openDriverAccountPanel('vehicle')"><span>My tanker</span><b>›</b></button>
+    <button class="accountbtn" onclick="openDriverAccountPanel('documents')"><span>Documents</span><b>›</b></button>
+    <button class="accountbtn" onclick="openDriverAccountPanel('settlement')"><span>Settlement</span><b>›</b></button>
+    <button class="accountbtn" onclick="openDriverAccountPanel('settings')"><span>Settings</span><b>›</b></button>
+    <button class="accountbtn" onclick="switchToCustomer()"><span>Switch to customer mode</span><b>›</b></button>
+    <button class="accountbtn" onclick="openDriverSupport()"><span>Help & support</span><b>›</b></button>
+      <button class="accountbtn" onclick="driverSignOut()"><span>Sign out</span><b>›</b></button>
+  </main>
+
+  <section class="screen" id="locationScreen"><div class="head"><button class="back" aria-label="Back" onclick="closeScreen('locationScreen')">‹</button><strong>Delivery location</strong></div><div class="body">
+    <input class="search" id="locationSearch" aria-label="Search delivery address" placeholder="Search area or address in Lebanon" oninput="sahreejSearchLocations(this.value)">
+    <div id="liveLocationResults" class="live-location-results" style="display:none"></div>
+    <button class="primary" style="margin-top:12px" onclick="useGPS(false)">Use my current location</button>
+    <button class="place" type="button" onclick="openMapPicker()"><div><strong>Choose on map</strong><small>Move the map to your delivery location</small></div><b aria-hidden="true">›</b></button>
+  </div></section>
+
+  <section class="screen" id="mapPicker"><div class="head"><button class="back" aria-label="Back to delivery location" onclick="closeScreen('mapPicker');openLocation()">‹</button><strong>Choose delivery location</strong></div>
+    <div class="fullmap"><div class="mapfallback"></div><div id="pickMap"></div><div class="pin"><label>Delivery location</label><b>●</b></div><div class="map-confirm"><button class="primary" onclick="confirmMapLocation()">Confirm this location</button></div></div>
+  </section>
+
+  <section class="screen" id="selector"><div class="fullmap" style="top:0"><div class="mapfallback"></div><div id="selectMap"></div></div>
+    <button class="icon" aria-label="Back to delivery location" style="position:absolute;z-index:10;top:18px;left:18px" onclick="closeScreen('selector');openLocation()">‹</button>
+    <div class="select-sheet"><h1 style="margin-bottom:2px">Choose your tanker</h1><span class="muted" id="selectAddress">Delivery location</span>
+      <div id="tankerOptions" class="tanker-options"><div class="pricing-loading"><span class="spinner"></span><strong>Loading available tankers…</strong></div></div>
+      <button class="pay" type="button" onclick="openAccountPanel('payments')" aria-label="Payment method"><strong id="payCode">CASH</strong><span id="payLabel">Cash on delivery</span><b aria-hidden="true">›</b></button><button class="primary" id="chooseBtn" onclick="openConfirm()" disabled>Choose a tanker</button>
+    </div>
+  </section>
+
+  <section class="screen" id="confirm"><div class="head"><button class="back" aria-label="Back to tanker selection" onclick="closeScreen('confirm');openSelector()">‹</button><strong>Confirm order</strong></div><div class="body">
+    <div class="card"><div class="row"><div><span class="muted">TANKER</span><strong id="cSize">—</strong></div><strong id="cPrice">—</strong></div></div>
+    <div class="card"><span class="muted">DELIVER TO</span><strong id="cAddress">—</strong></div>
+    <div class="card"><div class="row"><span>Payment</span><strong id="confirmPayment">Cash on delivery</strong></div></div>
+    <label class="fieldlabel" for="deliveryInstructions">Delivery instructions <span class="muted" style="display:inline">optional</span></label>
+    <textarea class="search" id="deliveryInstructions" maxlength="240" rows="3" placeholder="Gate, building, landmark, access notes…"></textarea>
+    <div class="card" id="orderAuthNotice" style="display:none"><strong>Sign in required</strong><span class="muted">You can browse as a guest, but you need a Sahreej account to place an order.</span></div>
+    <button class="primary" id="requestBtn" onclick="requestTanker()">Request tanker</button>
+  </div></section>
+
+  
+<section class="screen" id="tracking">
+  <div class="fullmap" style="top:0">
+    <div class="mapfallback"></div>
+    <div id="trackMap"></div>
+    <button class="icon" aria-label="Back to home" style="position:absolute;z-index:10;top:18px;left:18px" onclick="closeScreen('tracking');showCustomerTab('home')">‹</button>
+    <div id="liveEta" style="display:none;position:absolute;z-index:10;top:18px;left:76px;background:#fff;border-radius:999px;padding:11px 15px;font-weight:950;box-shadow:0 3px 14px #0002"></div>
+  </div>
+
+  <div class="select-sheet" id="trackingSheet">
+    <span class="status" id="trackStatus" role="status" aria-live="polite">SEARCHING</span>
+    <h1 id="trackTitle" style="margin:8px 0 3px">Searching for a driver…</h1>
+    <span class="muted" id="trackSub">We’re looking for the nearest approved Sahreej driver.</span>
+
+    <div id="realAssignedDriverHost"></div>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <strong id="trackSize">—</strong>
+          <span class="muted" id="trackAddress"></span>
+        </div>
+        <strong id="trackPrice">—</strong>
+      </div>
+    </div>
+
+    <button class="secondary" id="cancelCustomerOrderBtn" onclick="sahreejCustomerCancelActiveOrder()" style="margin-bottom:10px">Cancel order</button>
+    <button class="secondary" onclick="sahreejCreateSupportCase('customer',window.sahreejActiveServerOrderId||localStorage.getItem('sahreejActiveServerOrderId'))" style="margin-bottom:10px">Get help</button>
+  </div>
+</section>
+
+  <section class="screen" id="auth">
+    <div class="head"><button class="back" aria-label="Close account access" onclick="closeScreen('auth')">‹</button><strong>Account access</strong></div>
+    <div class="body">
+      <div class="role-tabs">
+        <button id="roleCustomer" class="role active" onclick="setAuthRole('customer')">Customer</button>
+        <button id="roleDriver" class="role" onclick="setAuthRole('driver')">Driver</button>
+      </div>
+
+      <div id="customerAuth">
+        <div class="auth-mode-tabs">
+          <button id="customerSignInTab" class="auth-mode active" onclick="setCustomerAuthMode('signin')">Sign in</button>
+          <button id="customerSignUpTab" class="auth-mode" onclick="setCustomerAuthMode('signup')">Sign up</button>
+        </div>
+        <div id="customerNameWrap" style="display:none">
+          <label class="fieldlabel" for="authName">Name</label>
+          <input class="search" id="authName" autocomplete="name" placeholder="Your name">
+        </div>
+        <h1 id="customerAuthTitle" style="margin-top:20px">Welcome back</h1>
+        <span class="muted" id="customerAuthCopy">Enter the mobile number used for your Sahreej account.</span>
+        <label class="fieldlabel" for="authPhone">Mobile number</label>
+        <div class="phonebox"><span>+961</span><input id="authPhone" inputmode="tel" autocomplete="tel" placeholder="71 234 567"></div>
+        <button class="primary" id="customerAuthContinue" style="margin-top:12px" onclick="sendDemoOtp()">Continue</button>
+      </div>
+
+      <div id="otpStep" style="display:none"><button class="secondary compact" style="margin-bottom:10px" onclick="setCustomerAuthMode(window.customerAuthMode||'signin')">← Back</button>
+        <h1 style="margin-top:20px">Enter verification code</h1>
+        <span class="muted" id="otpCopy">Phone verification is handled when you continue.</span>
+        <input class="search" id="otpCode" aria-label="Verification code" inputmode="numeric" maxlength="4" placeholder="1234" style="margin-top:14px;text-align:center;font-size:24px;letter-spacing:8px">
+        <button class="primary" style="margin-top:12px" onclick="verifyDemoOtp()">Verify</button>
+      </div>
+
+      <div id="driverAuth" style="display:none">
+        <div class="auth-mode-tabs">
+          <button id="driverSignInTab" class="auth-mode active" onclick="setDriverAuthMode('signin')">Sign in</button>
+          <button id="driverSignUpTab" class="auth-mode" onclick="setDriverAuthMode('signup')">Sign up</button>
+        </div>
+
+        <div id="driverSignInPane">
+          <h1 style="margin-top:20px">Driver sign in</h1>
+          <span class="muted">For drivers who already created a Sahreej driver account.</span>
+          <label class="fieldlabel">Mobile number</label>
+          <div class="phonebox"><span>+961</span><input id="driverPhone" aria-label="Driver mobile number" inputmode="tel" placeholder="71 234 567"></div>
+          <span class="muted" id="driverLoginHint" style="margin-top:8px"></span>
+          <button class="primary" style="margin-top:12px" onclick="driverLogin()">Sign in</button>
+        </div>
+
+        <div id="driverSignUpPane" style="display:none">
+          <h1 style="margin-top:20px">Become a Sahreej driver</h1>
+          <span class="muted">Create a new driver account and register your tanker.</span>
+          <button class="primary" style="margin-top:16px" onclick="closeScreen('auth');openDriverOnboarding()">Start driver registration</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="screen" id="accountPanel">
+    <div class="head"><button class="back" aria-label="Back to account" onclick="closeScreen('accountPanel')">‹</button><strong id="accountPanelTitle">Account</strong></div>
+    <div class="body" id="accountPanelBody"></div>
+  </section>
+
+  <section class="screen" id="driverOnboarding">
+    <div class="head"><button class="back" aria-label="Back" onclick="closeScreen('driverOnboarding')">‹</button><strong>Driver registration</strong></div>
+    <div class="body">
+      <h1>Drive with Sahreej</h1>
+      <span class="muted">Create your driver profile and register your tanker.</span>
+
+      <label class="fieldlabel" for="driverName">Full name</label>
+      <input class="search" id="driverName" placeholder="Driver name">
+      <label class="fieldlabel" for="driverRegPhone">Mobile number</label>
+      <div class="phonebox"><span>+961</span><input id="driverRegPhone" inputmode="tel" placeholder="71 234 567"></div>
+      <label class="fieldlabel" for="driverCapacity">Tanker capacity</label>
+      <select class="search" id="driverCapacity">
+        <option>1,000 L</option><option>3,000 L</option><option>6,000 L</option>
+      </select>
+      <label class="fieldlabel" for="driverPlate">Vehicle plate</label>
+      <input class="search" id="driverPlate" placeholder="Plate number">
+      <div class="card driver-docs-card">
+        <strong>Required documents</strong>
+        <span class="muted">Upload clear photos or PDFs. Your documents are stored securely with your Sahreej driver account.</span>
+        <label class="fieldlabel" for="driverDocId">National ID / Passport</label>
+        <input class="search driver-doc-input" id="driverDocId" type="file" accept="image/*,.pdf" onchange="updateDriverDocStatus()">
+        <label class="fieldlabel" for="driverDocLicense">Driving licence</label>
+        <input class="search driver-doc-input" id="driverDocLicense" type="file" accept="image/*,.pdf" onchange="updateDriverDocStatus()">
+        <label class="fieldlabel" for="driverDocVehicle">Vehicle registration</label>
+        <input class="search driver-doc-input" id="driverDocVehicle" type="file" accept="image/*,.pdf" onchange="updateDriverDocStatus()">
+        <label class="fieldlabel" for="driverDocInsurance">Vehicle insurance</label>
+        <input class="search driver-doc-input" id="driverDocInsurance" type="file" accept="image/*,.pdf" onchange="updateDriverDocStatus()">
+        <div class="muted" id="driverDocStatus" style="margin-top:10px">0 of 4 documents selected</div>
+      </div>
+      <button class="primary" onclick="submitDriverRegistration()">Submit registration</button>
+    </div>
+  </section>
+
+  <main class="driver-page" id="driverDashboard">
+    <div class="driver-top">
+      <div><span class="muted">SAHREEJ DRIVER</span><h1 id="driverDashName">Driver</h1></div>
+      
+    </div>
+    <div class="body">
+      <div class="driver-online-card">
+        <div><strong id="driverOnlineTitle">You're offline</strong><span class="muted" id="driverOnlineSub">Go online to receive tanker requests.</span></div>
+        <label class="switch"><input id="driverOnlineToggle" type="checkbox" aria-label="Driver online availability" onchange="toggleDriverOnline()"><span></span></label>
+      </div>
+
+      <div class="driver-stats">
+        <div><strong id="driverHomeToday">$0</strong><small>Today</small></div>
+        <div><strong id="driverHomeTrips">0</strong><small>Trips</small></div>
+        <div><strong id="driverHomeTodayTrips">0</strong><small>Trips today</small></div>
+      </div>
+
+      <div id="driverCompletedBanner" class="driver-success" style="display:none">
+        <strong>Delivery completed</strong>
+        <span>Your earnings and activity have been updated.</span>
+      </div>
+      <div id="driverWaiting" class="driver-empty">
+        <div class="driver-map-mini">⌖</div>
+        <h2>Ready when you are</h2>
+        <span class="muted">Go online and nearby customer requests will appear here.</span>
+      </div>
+
+      
+
+      </div>
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<script src="js/compat/legacy-ui.js?v=862"></script>
+  <script src="js/core/state.js"></script>
+<script src="js/core/auth.js"></script>
+<script src="js/core/driver.js?v=862"></script>
+<script src="js/core/routing.js"></script>
+<script src="js/core/dispatch.js"></script>
+<script src="js/core/tracking.js?v=854"></script>
+<script src="js/core/customer.js?v=857"></script>
+<script src="js/core/history.js?v=855"></script>
+<script src="js/core/support.js?v=849"></script>
+  <script src="js/core/driver-account.js"></script>
+<script src="js/core/driver-media.js?v=841" data-sahreej-driver-media="1"></script>
+<script src="js/core/driver-profile-media.js?v=841" data-sahreej-driver-profile-media="1"></script>
+<script src="js/core/live-delivery-polish.js?v=841" data-sahreej-live-delivery-polish="1"></script>
+<script src="js/core/notifications.js?v=841" data-sahreej-notifications="1"></script>
+<script src="js/core/app.js?v=851"></script>
+<script src="js/core/recovery.js?v=852"></script>
+<script src="js/core/ui-polish.js"></script>
+<script src="js/core/customer-location-availability.js?v=859"></script>
+<script src="js/core/mobile-map-sheets.js?v=864"></script>
+</body></html>
