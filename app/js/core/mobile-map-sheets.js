@@ -62,8 +62,19 @@
       grabber.setAttribute('aria-expanded',String(next==='expanded'));
       applyTop(snapTop(next),animate);
       if(next!=='expanded')sheet.scrollTop=0;
+      // Do not dispatch a synthetic window resize here.
+      // The module already listens to resize and dispatching one from setState()
+      // creates an endless setState -> resize -> setState loop on mobile Safari.
+      // Leaflet maps only need their own size invalidated after the sheet settles.
       setTimeout(()=>{
-        try{window.dispatchEvent(new Event('resize'));}catch(_){}
+        try{
+          ['homeMap','pickMap','selectMap','trackMap'].forEach(id=>{
+            const el=document.getElementById(id);
+            if(!el)return;
+            const map=Object.values(window.maps||{}).find(m=>m&&m._container===el);
+            map?.invalidateSize?.({pan:false});
+          });
+        }catch(_){}
       },animate?240:0);
     }
 
