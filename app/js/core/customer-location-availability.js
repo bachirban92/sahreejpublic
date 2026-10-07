@@ -336,11 +336,22 @@
     const old=btn?.textContent;
     if(btn){btn.disabled=true;btn.textContent='Checking driver…';}
     try{
-      // Re-check availability immediately before creating the order so the confirmation
-      // cannot rely on an old/static ETA.
-      const nearby=await nearestDrivers(d.coords);
+      // Re-check availability and current backend pricing immediately before
+      // creating the order so confirmation cannot rely on stale UI state.
+      const [nearby,pricingNow]=await Promise.all([nearestDrivers(d.coords),activePricing()]);
       const candidate=(nearby||[]).find(r=>Number(r.tanker_capacity_l)===Number(d.capacity));
       if(!candidate) throw new Error('No nearby driver is available for this tanker size now');
+
+      const priceRow=(pricingNow||[]).find(r=>Number(r.tanker_capacity_l)===Number(d.capacity));
+      if(!priceRow) throw new Error('This tanker size is no longer available');
+      const currentPrice=Number(priceRow.customer_price_usd);
+      if(!Number.isFinite(currentPrice)) throw new Error('Could not confirm the current price');
+      if(Math.abs(currentPrice-Number(d.price||0))>0.001){
+        writeDraft({price:currentPrice});
+        window.chosen={size:Number(d.capacity).toLocaleString()+' L',price:currentPrice,eta:window.chosen?.eta||''};
+        const priceEl=$('cPrice'); if(priceEl) priceEl.textContent=money(currentPrice);
+        throw new Error(`Price updated to ${money(currentPrice)}. Please review and request again.`);
+      }
 
       const session=await S.requireSession();
       if(!session?.user?.id) throw new Error('Please sign in again');
@@ -356,12 +367,14 @@
 
       if(btn) btn.textContent='Requesting…';
       const payment=(typeof getPayment==='function'?getPayment().label:'Cash on delivery');
-      const {data,error}=await window.sahreejSupabase.rpc('create_dispatch_order',{
+      const note=String($('deliveryInstructions')?.value||'').trim();
+      const {data,error}=await window.sahreejSupabase.rpc('create_dispatch_order_v2',{
         p_tanker_capacity_l:Number(d.capacity),
         p_payment_method:payment,
         p_delivery_address:d.address||`Pinned location · ${d.coords.lat.toFixed(5)}, ${d.coords.lng.toFixed(5)}`,
         p_delivery_latitude:d.coords.lat,
-        p_delivery_longitude:d.coords.lng
+        p_delivery_longitude:d.coords.lng,
+        p_delivery_instructions:note||null
       });
       if(error) throw error;
       const orderId=typeof data==='string'?data:(data?.order_id||data?.id||data);
@@ -381,7 +394,7 @@
       if(typeof toast==='function') toast(e.message||'Could not place order');
       return null;
     }finally{
-      if(btn){btn.disabled=false;btn.textContent=customerSignedIn()?`Request tanker · ${money(d.price)}`:'Sign in to request';}
+      if(btn){const latest=canonical();btn.disabled=false;btn.textContent=customerSignedIn()?`Request tanker · ${money(latest.price||d.price)}`:'Sign in to request';}
     }
   };
   try{requestTanker=window.requestTanker}catch(_){ }
