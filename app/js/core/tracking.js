@@ -205,8 +205,21 @@
   }
 
   async function activeDriverLocation(){
-    try{const {data,error}=await window.sahreejSupabase.rpc('get_my_active_driver_location');if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row||row.latitude==null||row.longitude==null)return null;return{lat:Number(row.latitude),lng:Number(row.longitude),updated_at:row.updated_at};}
-    catch(e){console.warn('live driver location',e);return null;}
+    try{
+      const {data,error}=await window.sahreejSupabase.rpc('get_my_active_driver_location');
+      if(error)throw error;
+      const row=Array.isArray(data)?data[0]:data;
+      if(!row||row.latitude==null||row.longitude==null)return null;
+      const updatedAt=row.updated_at?new Date(row.updated_at).getTime():0;
+      const ageMs=updatedAt?Date.now()-updatedAt:Infinity;
+      return{
+        lat:Number(row.latitude),
+        lng:Number(row.longitude),
+        updated_at:row.updated_at,
+        age_ms:ageMs,
+        stale:!Number.isFinite(ageMs)||ageMs>90000
+      };
+    }catch(e){console.warn('live driver location',e);return null;}
   }
 
   async function updateLiveRoute(order,force=false){
@@ -214,7 +227,15 @@
     const dest=customerPoint(order);if(!dest)return;
     const map=ensureMap(dest);if(!map)return;
     const pos=await activeDriverLocation();
-    if(!pos){map.setView([dest.lat,dest.lng],16,{animate:false});resizeMap();return;}
+    const eta=q('liveEta');
+    if(!pos){
+      if(eta){eta.style.display='';eta.textContent='Driver location unavailable';}
+      map.setView([dest.lat,dest.lng],16,{animate:false});resizeMap();return;
+    }
+    if(pos.stale){
+      if(eta){eta.style.display='';eta.textContent='Driver location updating…';}
+      return;
+    }
     if(!driverMarker)driverMarker=L.marker([pos.lat,pos.lng],{icon:S.driverIcon?S.driverIcon():undefined}).addTo(map);else driverMarker.setLatLng([pos.lat,pos.lng]);
     const moved=!lastPos||Math.hypot(pos.lat-lastPos.lat,pos.lng-lastPos.lng)>0.00012;const due=Date.now()-lastRouteAt>8000;
     if(force||moved||due){
@@ -224,7 +245,7 @@
         if(routeLayer){try{map.removeLayer(routeLayer)}catch(_){}}
         const coords=route.geometry.coordinates.map(([lng,lat])=>[lat,lng]);
         routeLayer=L.polyline(coords,{weight:6,opacity:.9}).addTo(map);
-        const f=S.formatRoute(route);const eta=q('liveEta');if(eta){eta.style.display='';eta.textContent=`${f.mins} min · ${f.km.toFixed(1)} km`;}
+        const f=S.formatRoute(route);if(eta){eta.style.display='';eta.textContent=`${f.mins} min · ${f.km.toFixed(1)} km`;}
         const bounds=routeLayer.getBounds();if(bounds?.isValid?.())map.fitBounds(bounds,{paddingTopLeft:[40,90],paddingBottomRight:[40,300],maxZoom:17,animate:false});
       }catch(e){console.warn('live route draw',e);map.fitBounds([[pos.lat,pos.lng],[dest.lat,dest.lng]],{paddingTopLeft:[40,90],paddingBottomRight:[40,300],maxZoom:17,animate:false});}
       resizeMap();
